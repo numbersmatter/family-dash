@@ -1,40 +1,23 @@
-# Welcome to Remix!
+## Welcome to Family Dash
 
-- 📖 [Remix docs](https://remix.run/docs)
+This app allows food pantries to take orders like restaurants.
 
-## Development
+## Workflow
 
-Run the dev server:
-
-```shellscript
-npm run dev
-```
-
-## Deployment
-
-First, build your app for production:
-
-```sh
-npm run build
-```
-
-Then run the app in production mode:
-
-```sh
-npm start
-```
-
-Now you'll need to pick a host to deploy it to.
-
-### DIY
-
-If you're familiar with deploying Node applications, the built-in Remix app server is production-ready.
-
-Make sure to deploy the output of `npm run build`
-
-- `build/server`
-- `build/client`
-
-## Styling
-
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever css framework you prefer. See the [Vite docs on css](https://vitejs.dev/guide/features.html#css) for more information.
+1. Families sign-up on the app
+2. They register to be notified by the food pantry
+3. The food pantry opens a program
+4. Families apply for enrollment
+5. Food pantry approves or denies the application
+6. Families receive an email with a link to the dashboard
+7. Families log in to the dashboard
+8. Families can view open food opportunities
+9. Families apply for a food opportunity
+10. Food pantry approves or denies the application
+11. Families are notified of the status of their application
+12. Pick up time and delivery time are set
+13. Family receives confirmation code
+14. Family goes to food pantry and picks up food
+15. Families can view their invoices
+16. Families can view their reports
+17.
