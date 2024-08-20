@@ -3,9 +3,20 @@ import type { LoaderFunctionArgs } from "@remix-run/node";
 import { LoaderFunction, redirect } from "@remix-run/node";
 import { FormCard } from "./components/form-card";
 import { Button } from "~/components/ui/button";
-import { CaretakerContent, CaretakerFormDialog } from "./components/caretaker";
+import {
+  CaretakerFormDialog,
+  ContentCaretakers
+} from "./components/caretaker";
 import { AddressContent, AddressFormDialog } from "./components/address";
-import { FamilyContent, FamilyFooter } from "./components/family";
+import {
+  ContentStudents,
+  FooterStudents,
+  ContentMinors,
+  FooterMinors
+} from "./components/family";
+import { Header } from "./components/header";
+import { ContentAdults, FooterAdults, } from "./components/adults";
+import { SubmitCard } from "./components/submit-card";
 
 
 
@@ -18,8 +29,17 @@ export const loader = async (args: LoaderFunctionArgs) => {
     state: "NC",
     zip: "10001",
   }
+  const primary_caretaker = {
+    fname: "Leslie",
+    lname: "Foster",
+    email: "leslie@example.com",
+    phone: "(919) 555-1234",
+  }
+  const usage = {
+    caretaker: "This data will only be used by the nonprofits program director to provide food services to participatants.",
+  }
 
-  return json({ address });
+  return json({ address, primary_caretaker, usage });
 };
 
 
@@ -32,12 +52,13 @@ export default function ServicePeriodEnrollment() {
 
   return (
     <>
+      <Header />
       <FormCard
         title="Primary Caretaker"
         description="Contact Information"
         footer={<CaretakerFormDialog />}
       >
-        <CaretakerContent />
+        <ContentCaretakers />
       </FormCard>
       <FormCard
         title="Address"
@@ -47,13 +68,27 @@ export default function ServicePeriodEnrollment() {
         <AddressContent />
       </FormCard>
       <FormCard
-        title="Family Members"
-        description="Family Members"
-        footer={<FamilyFooter />}
+        title="Household Adults"
+        description="Include only those over 18 who are not enrolled in Thomasville City Schools"
+        footer={<FooterAdults />}
       >
-        <FamilyContent />
+        <ContentAdults />
       </FormCard>
-
+      <FormCard
+        title="Students"
+        description="Enter Students"
+        footer={<FooterAdults />}
+      >
+        <ContentStudents />
+      </FormCard>
+      <FormCard
+        title="Unenrolled Minors"
+        description="Enter those under 18 who are not enrolled in Thomasville City Schools"
+        footer={<FooterMinors />}
+      >
+        <ContentMinors />
+      </FormCard>
+      <SubmitCard />
     </>
   )
 } 

@@ -56,7 +56,7 @@ const main_nav: Array<{ id: NavId, name: string, to: string, icon: ElementType }
   },
   {
     id: "history",
-    name: "Service History",
+    name: "Services Received",
     to: "/service-history",
     icon: LineChart
   }
@@ -150,15 +150,13 @@ export default function UIShell({
           <div className="mt-auto p-4">
             <Card x-chunk="dashboard-02-chunk-0">
               <CardHeader className="p-2 pt-0 md:p-4">
-                <CardTitle>Upgrade to Pro</CardTitle>
+                <CardTitle>Sign in / Sign Out</CardTitle>
                 <CardDescription>
-                  Unlock all features and get unlimited access to our support
-                  team.
                 </CardDescription>
               </CardHeader>
               <CardContent className="p-2 pt-0 md:p-4 md:pt-0">
                 <Button size="sm" className="w-full">
-                  Upgrade
+                  Sign in
                 </Button>
               </CardContent>
             </Card>
@@ -210,15 +208,14 @@ export default function UIShell({
               <div className="mt-auto">
                 <Card>
                   <CardHeader>
-                    <CardTitle>Upgrade to Pro</CardTitle>
+                    <CardTitle>Sign in / Sign Out</CardTitle>
                     <CardDescription>
-                      Unlock all features and get unlimited access to our
-                      support team.
+
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <Button size="sm" className="w-full">
-                      Upgrade
+                      Sign in
                     </Button>
                   </CardContent>
                 </Card>

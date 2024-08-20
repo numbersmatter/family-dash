@@ -20,4 +20,31 @@ This app allows food pantries to take orders like restaurants.
 14. Family goes to food pantry and picks up food
 15. Families can view their invoices
 16. Families can view their reports
-17.
+
+## TODO
+
+- [ ] Register for Service Period
+
+## Domain Language
+
+This is build using a college domain language.
+
+### College Domain Language
+
+- Students Register for College Semester
+- Registered Students see a list of courses
+- Registered Students apply to enroll in a course
+- Accepted Students are enrolled in the course
+- Enrolled Students see assignments
+- Students choose to submit assignments and recieve grade
+- Different grades denote different ideas
+
+### Nonprofit Domain Language
+
+- Families Register for Service Period
+- Families see a list of programs
+- Families apply to enroll in a program
+- Accepted Families are enrolled in the program
+- Enrolled Families see a list of food opportunities
+- Enrolled choose to submit food request and recieve request status
+- Different request statuses denote different ideas
