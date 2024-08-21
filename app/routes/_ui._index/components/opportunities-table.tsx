@@ -21,17 +21,6 @@ import {
 } from "~/components/ui/table"
 import { loader } from "../route"
 
-interface FoodOpportunity {
-  id: string;
-  name: string;
-  status: string;
-  code: string;
-  totalSales: number;
-  date: string;
-  applied: boolean;
-}
-
-
 export default function OpenOpportunities() {
   const { opportunities } = useLoaderData<typeof loader>()
   const totalOpportunities = opportunities.length;

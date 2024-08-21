@@ -4,6 +4,7 @@ import type { MetaFunction } from "@remix-run/node";
 
 import { Button } from "~/components/ui/button"
 import { StatusCard } from "./components/status-card";
+import OpenOpportunities from "./components/opportunities-table";
 
 
 export const meta: MetaFunction = () => {
@@ -20,6 +21,16 @@ export type Enrollment = {
   helpText: string,
   enrollement: boolean
 }
+interface FoodOpportunity {
+  id: string;
+  name: string;
+  status: string;
+  code: string;
+  totalSales: number;
+  date: string;
+  applied: boolean;
+}
+
 
 
 export const loader = async (args: LoaderFunctionArgs) => {
@@ -33,8 +44,30 @@ export const loader = async (args: LoaderFunctionArgs) => {
       enrollement: false,
     }
   ]
+  const opportunities: FoodOpportunity[] = [
+    {
+      id: "1",
+      name: "Food Pickup - Sept 4th",
+      status: "Confirmed",
+      code: "H5GVB",
+      totalSales: 25,
+      date: "Sept. 4, 2024",
+      applied: true
+    },
+    {
+      id: "2",
+      name: "Drive-Thru - Sept 18",
+      status: "Open",
+      code: "DF6R",
+      totalSales: 100,
+      date: "September 18, 2024",
+      applied: false
 
-  return json({ enrollments });
+    },
+  ]
+
+
+  return json({ enrollments, opportunities });
 };
 
 
@@ -51,6 +84,7 @@ export default function Dashboard() {
       {enrollments.map((enrollment) => (
         <StatusCard key={enrollment.id} data={enrollment} />
       ))}
+      <OpenOpportunities />
       <div className="flex items-center">
         <h2 className="text-lg font-semibold md:text-xl">
           Upcoming Events
