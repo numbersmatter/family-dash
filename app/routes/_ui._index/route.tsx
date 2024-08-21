@@ -5,6 +5,7 @@ import type { MetaFunction } from "@remix-run/node";
 import { Button } from "~/components/ui/button"
 import { StatusCard } from "./components/status-card";
 import OpenOpportunities from "./components/opportunities-table";
+import { useTranslation } from "react-i18next";
 
 
 export const meta: MetaFunction = () => {
@@ -74,11 +75,12 @@ export const loader = async (args: LoaderFunctionArgs) => {
 
 export default function Dashboard() {
   const { enrollments } = useLoaderData<typeof loader>()
+  const { t } = useTranslation();
   return (
     <>
       <div className="flex items-center">
         <h1 className="text-lg font-semibold md:text-2xl">
-          Welcome to Family Dash
+          {t("welcome")}
         </h1>
       </div>
       {enrollments.map((enrollment) => (

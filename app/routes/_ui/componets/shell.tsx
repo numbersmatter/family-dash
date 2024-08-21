@@ -17,6 +17,7 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "~/components/ui/card"
@@ -31,6 +32,7 @@ import {
 import { Sheet, SheetContent, SheetTrigger } from "~/components/ui/sheet"
 import { ElementType, } from "react"
 import { cn } from "~/lib/utils"
+import { useTranslation } from "react-i18next"
 
 export type NavId = "dashboard" | "enrollment" | "opportunities" | "history"
 
@@ -80,6 +82,7 @@ export default function UIShell({
   main_notification: Record<NavId, NavNotification>,
   pantry_name: string
 }) {
+  const { i18n } = useTranslation();
 
 
   return (
@@ -150,15 +153,21 @@ export default function UIShell({
           <div className="mt-auto p-4">
             <Card x-chunk="dashboard-02-chunk-0">
               <CardHeader className="p-2 pt-0 md:p-4">
-                <CardTitle>Sign in / Sign Out</CardTitle>
+                <CardTitle> Langauge</CardTitle>
                 <CardDescription>
                 </CardDescription>
               </CardHeader>
               <CardContent className="p-2 pt-0 md:p-4 md:pt-0">
-                <Button size="sm" className="w-full">
-                  Sign in
+                <Button onClick={() => i18n.changeLanguage("es")} size="sm" className="w-full">
+                  Spanish
                 </Button>
               </CardContent>
+              <CardFooter>
+                <Button onClick={() => i18n.changeLanguage("en")} size="sm" className="w-full">
+                  English
+                </Button>
+
+              </CardFooter>
             </Card>
           </div>
         </div>
