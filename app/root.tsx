@@ -15,8 +15,8 @@ import { userInfo } from "./lib/business-logic/signed-in.server";
 
 
 export const loader = async (args: LoaderFunctionArgs) => {
-  // let locale = await i18next.getLocale(args.request);
-  const locale = "en"
+  let locale = await i18next.getLocale(args.request);
+  // const locale = "en"
   const user = await userInfo();
   return json({ locale, user });
 };

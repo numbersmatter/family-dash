@@ -1,3 +1,4 @@
+import type { ActionFunctionArgs } from "@remix-run/node";
 import { json, useLoaderData } from "@remix-run/react"
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { LoaderFunction, redirect } from "@remix-run/node";
@@ -10,11 +11,12 @@ import { AddressContent, AddressFormDialog } from "./components/address";
 import {
   ContentMinors,
   FooterMinors
-} from "./components/family";
+} from "./components/minor";
 import { ContentStudents, FooterStudents } from "./components/students";
 import { Header } from "./components/header";
 import { ContentAdults, FooterAdults, } from "./components/adults";
 import { SubmitCard } from "./components/submit-card";
+import { NumberAdults } from "./components/number-adults";
 
 
 
@@ -36,11 +38,27 @@ export const loader = async (args: LoaderFunctionArgs) => {
   const usage = {
     caretaker: "This data will only be used by the nonprofits program director to provide food services to participatants.",
   }
+  const adults = 1;
 
-  return json({ address, primary_caretaker, usage });
+  return json({ address, primary_caretaker, usage, adults });
 };
 
 
+
+export const action = async (args: ActionFunctionArgs) => {
+  const formInput = await args.request.formData();
+
+  const type = formInput.get("type");
+
+  if (type === "adults") {
+    await setTimeout(() => {
+      console.log("adults");
+    }, 2000);
+    return json({ success: true });
+  }
+
+  return json({ success: false });
+};
 
 
 
@@ -65,13 +83,7 @@ export default function ServicePeriodEnrollment() {
       >
         <AddressContent />
       </FormCard>
-      <FormCard
-        title="Household Adults"
-        description="Include only those over 18 who are not enrolled in Thomasville City Schools"
-        footer={<FooterAdults />}
-      >
-        <ContentAdults />
-      </FormCard>
+      <NumberAdults />
       <FormCard
         title="Students"
         description="Enter Students"
