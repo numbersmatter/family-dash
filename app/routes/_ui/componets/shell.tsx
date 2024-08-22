@@ -34,7 +34,12 @@ import { ElementType, } from "react"
 import { cn } from "~/lib/utils"
 import { useTranslation } from "react-i18next"
 
-export type NavId = "dashboard" | "enrollment" | "opportunities" | "history"
+export type NavId =
+  "dashboard"
+  | "enrollment"
+  | "opportunities"
+  | "history"
+  | "register"
 
 
 const main_nav: Array<{ id: NavId, name: string, to: string, icon: ElementType }> = [
@@ -45,9 +50,9 @@ const main_nav: Array<{ id: NavId, name: string, to: string, icon: ElementType }
     icon: Home
   },
   {
-    id: "enrollment",
-    name: "Enrollment",
-    to: "/enrollment",
+    id: "register",
+    name: "Register",
+    to: "/register",
     icon: Users
   },
   {
@@ -66,7 +71,7 @@ const main_nav: Array<{ id: NavId, name: string, to: string, icon: ElementType }
 
 export interface NavNotification {
   id: NavId
-  number: number
+  number?: number
   type: "high" | "medium" | "low"
 }
 
@@ -102,21 +107,27 @@ export default function UIShell({
           </div>
           <div className="flex-1">
             <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
-              {main_nav.map((nav_item) => (
-                <NavLink
-                  key={nav_item.id}
-                  to={nav_item.to}
-                  className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
-                >
-                  <nav_item.icon className="h-4 w-4" />
-                  {nav_item.name}
-                  {main_notification?.[nav_item.id].number > 0 && (
-                    <Badge className="ml-auto flex h-6 w-6 shrink-0 items-center justify-center rounded-full">
-                      {main_notification[nav_item.id].number}
-                    </Badge>
-                  )}
-                </NavLink>
-              ))}
+              {main_nav.map((nav_item) => {
+                const number = main_notification?.[nav_item.id].number ?? 0
+
+                return (
+
+                  <NavLink
+                    key={nav_item.id}
+                    to={nav_item.to}
+                    className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
+                  >
+                    <nav_item.icon className="h-4 w-4" />
+                    {nav_item.name}
+                    {number > 0 && (
+                      <Badge className="ml-auto flex h-6 w-6 shrink-0 items-center justify-center rounded-full">
+                        {main_notification[nav_item.id].number}
+                      </Badge>
+                    )}
+                  </NavLink>
+                )
+              }
+              )}
               {/* <NavLink
                 to="/"
                 className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
@@ -190,28 +201,32 @@ export default function UIShell({
             <SheetContent side="left" className="flex flex-col">
               <nav className="mt-3.5 grid gap-2 text-lg font-medium">
                 {
-                  main_nav.map((nav_item) => (
-                    <NavLink
-                      key={nav_item.id}
-                      to={nav_item.to}
-                      className={({ isActive }) => cn(
-                        isActive
-                          ? "bg-muted"
-                          : "text-muted-foreground hover:text-foreground",
-                        "mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
-                      )}
-                    >
-                      <nav_item.icon className="h-6 w-6" />
-                      {nav_item.name}
-                      {
-                        main_notification?.[nav_item.id].number > 0 && (
-                          <Badge className="ml-auto flex h-6 w-6 shrink-0 items-center justify-center rounded-full">
-                            {main_notification[nav_item.id].number}
-                          </Badge>
-                        )
-                      }
-                    </NavLink>
-                  ))
+                  main_nav.map((nav_item) => {
+                    const number = main_notification?.[nav_item.id].number ?? 0
+                    return (
+                      <NavLink
+                        key={nav_item.id}
+                        to={nav_item.to}
+                        className={({ isActive }) => cn(
+                          isActive
+                            ? "bg-muted"
+                            : "text-muted-foreground hover:text-foreground",
+                          "mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
+                        )}
+                      >
+                        <nav_item.icon className="h-6 w-6" />
+                        {nav_item.name}
+                        {
+                          number > 0 && (
+                            <Badge className="ml-auto flex h-6 w-6 shrink-0 items-center justify-center rounded-full">
+                              {main_notification[nav_item.id].number}
+                            </Badge>
+                          )
+                        }
+                      </NavLink>
+                    )
+                  }
+                  )
                 }
               </nav>
               <div className="mt-auto">

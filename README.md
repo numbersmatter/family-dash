@@ -48,3 +48,5 @@ This is build using a college domain language.
 - Enrolled Families see a list of food opportunities
 - Enrolled choose to submit food request and recieve request status
 - Different request statuses denote different ideas
+
+- [ ] add number of adults to family application

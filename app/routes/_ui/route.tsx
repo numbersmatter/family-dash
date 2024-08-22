@@ -28,7 +28,11 @@ export default function UIRoute() {
       id: "history",
       number: 0,
       type: "low"
-
+    },
+    register: {
+      id: "register",
+      number: 0,
+      type: "low",
     }
   } as Record<NavId, NavNotification>
   return (

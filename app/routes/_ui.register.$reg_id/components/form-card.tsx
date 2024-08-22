@@ -1,34 +1,33 @@
+
+
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "~/components/ui/card";
-import { Enrollment } from "../route";
-import { Link } from "@remix-run/react";
 
 
 
-export function StatusCard({ data }: { data: Enrollment }) {
+export function FormCard({
+  title, description, children, footer
+}: {
+  children: React.ReactNode,
+  footer: React.ReactNode,
+  title: string,
+  description: string
+}) {
   return (
     <Card>
       <CardHeader>
         <CardTitle>
-          Register For {data.title}
+          {title}
         </CardTitle>
         <CardDescription>
-          {data.description}
+          {description}
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <p>
-          {data.helpText}
-        </p>
-
+        {children}
       </CardContent>
       <CardFooter>
-        <Link to={`/register/${data.id}`} >
-          <Button variant="default" size="lg">
-
-            Register
-          </Button>
-        </Link>
+        {footer}
       </CardFooter>
     </Card>
   )

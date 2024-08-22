@@ -11,11 +11,14 @@ import "./tailwind.css";
 import { Toaster } from "./components/ui/sonner";
 import i18next from "./localization/i18next.server";
 import { useTranslation } from "react-i18next";
+import { userInfo } from "./lib/business-logic/signed-in.server";
 
 
 export const loader = async (args: LoaderFunctionArgs) => {
-  let locale = await i18next.getLocale(args.request);
-  return json({ locale });
+  // let locale = await i18next.getLocale(args.request);
+  const locale = "en"
+  const user = await userInfo();
+  return json({ locale, user });
 };
 
 
@@ -32,9 +35,11 @@ export let handle = {
 export function Layout({ children }: { children: React.ReactNode }) {
   const { locale } = useLoaderData<typeof loader>();
 
+  const lang = locale ?? "en"
+
   const { i18n } = useTranslation();
   return (
-    <html lang={locale} dir={i18n.dir()}>
+    <html lang={lang} dir={i18n.dir()}>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
