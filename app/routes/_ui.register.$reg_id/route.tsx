@@ -17,10 +17,13 @@ import { Header } from "./components/header";
 import { ContentAdults, FooterAdults, } from "./components/adults";
 import { SubmitCard } from "./components/submit-card";
 import { NumberAdults } from "./components/number-adults";
+import { userInfo } from "~/lib/business-logic/signed-in.server";
 
 
 
 export const loader = async (args: LoaderFunctionArgs) => {
+  const { reg_id } = args.params;
+  const { userId } = await userInfo(args);
 
   const address = {
     street: "123 Main St",

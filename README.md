@@ -49,4 +49,5 @@ This is build using a college domain language.
 - Enrolled choose to submit food request and recieve request status
 - Different request statuses denote different ideas
 
-- [ ] add number of adults to family application
+- [x] add number of adults to family application
+- [ ] no registered semesters

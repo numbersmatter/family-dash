@@ -1,6 +1,15 @@
+import { json, useLoaderData } from "@remix-run/react"
+import type { LoaderFunctionArgs } from "@remix-run/node";
 import { Button } from "~/components/ui/button";
 import UIShell, { NavId, NavNotification } from "./componets/shell";
 import { Outlet } from "@remix-run/react";
+import { userInfo } from "~/lib/business-logic/signed-in.server";
+
+
+export const loader = async (args: LoaderFunctionArgs) => {
+  const { userId } = await userInfo(args);
+  return json({});
+};
 
 
 

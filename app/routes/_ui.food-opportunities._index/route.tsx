@@ -1,6 +1,7 @@
 import { json, useLoaderData } from "@remix-run/react"
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import OpenOpportunities from "./components/open-opportunities";
+import { userInfo } from "~/lib/business-logic/signed-in.server";
 
 
 interface FoodOpportunity {
@@ -16,7 +17,7 @@ interface FoodOpportunity {
 
 
 export const loader = async (args: LoaderFunctionArgs) => {
-
+  const { userId } = await userInfo(args);
   const opportunities: FoodOpportunity[] = [
     {
       id: "1",
