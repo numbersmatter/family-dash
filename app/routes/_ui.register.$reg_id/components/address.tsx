@@ -16,6 +16,7 @@ import { useState } from "react"
 
 export function AddressContent() {
   const { address } = useLoaderData<typeof loader>()
+
   return (
     <div>
       <div className="mt-6 border-t border-gray-100">
@@ -83,7 +84,7 @@ export function AddressFormDialog() {
   ]
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="outline">Edit Address</Button>
       </DialogTrigger>
@@ -94,35 +95,38 @@ export function AddressFormDialog() {
             Make changes to your address. Click save when you&apos;re done.
           </DialogDescription>
         </DialogHeader>
-        <div className="grid gap-4 py-4">
-          {
-            fields.map((field) => {
-              return (
-                <div key={field.id} className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor={field.id} className="text-right">
-                    {field.label}
-                  </Label>
-                  <Input
-                    id={field.id}
-                    defaultValue={field.value}
-                    className="col-span-3"
-                  />
-                  <div className="col-start-2 col-span-3 ">
-                    {field.errors.map((error) => (
-                      <p className={"pb-3 text-red-600"} key={error.id}>
-                        {error.message}
-                      </p>
-                    ))}
-                  </div>
-                </div>
-              )
-            }
-            )}
+        <fetcher.Form method="post">
 
-        </div>
-        <DialogFooter>
-          <Button type="submit">Save changes</Button>
-        </DialogFooter>
+          <div className="grid gap-4 py-4">
+            {
+              fields.map((field) => {
+                return (
+                  <div key={field.id} className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor={field.id} className="text-right">
+                      {field.label}
+                    </Label>
+                    <Input
+                      id={field.id}
+                      defaultValue={field.value}
+                      className="col-span-3"
+                    />
+                    <div className="col-start-2 col-span-3 ">
+                      {field.errors.map((error) => (
+                        <p className={"pb-3 text-red-600"} key={error.id}>
+                          {error.message}
+                        </p>
+                      ))}
+                    </div>
+                  </div>
+                )
+              }
+              )}
+
+          </div>
+          <DialogFooter>
+            <Button type="submit">Save changes</Button>
+          </DialogFooter>
+        </fetcher.Form>
       </DialogContent>
     </Dialog>
   )

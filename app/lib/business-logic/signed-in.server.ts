@@ -1,5 +1,6 @@
 import { LoaderFunctionArgs } from "@remix-run/node";
 import { isRegistered } from "./registration.server";
+import i18nServer from "~/modules/i18n.server";
 
 export const userInfo = async (args: LoaderFunctionArgs) => {
   const userId = "1234";

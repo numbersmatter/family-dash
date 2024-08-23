@@ -30,9 +30,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
 
   const pageData = await getDashboardData(args);
 
-  if (!registered) {
-    throw redirect("/register")
-  }
+
 
   return json({ ...pageData });
 };

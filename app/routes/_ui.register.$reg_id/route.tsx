@@ -18,12 +18,15 @@ import { ContentAdults, FooterAdults, } from "./components/adults";
 import { SubmitCard } from "./components/submit-card";
 import { NumberAdults } from "./components/number-adults";
 import { userInfo } from "~/lib/business-logic/signed-in.server";
+import { AddStudentDialog } from "./components/add-student-dialog";
+import i18nServer from "~/modules/i18n.server";
 
 
 
 export const loader = async (args: LoaderFunctionArgs) => {
   const { reg_id } = args.params;
   const { userId } = await userInfo(args);
+  let locale = await i18nServer.getLocale(args.request);
 
   const address = {
     street: "123 Main St",
@@ -43,7 +46,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
   }
   const adults = 1;
 
-  return json({ address, primary_caretaker, usage, adults });
+  return json({ address, primary_caretaker, usage, adults, locale });
 };
 
 
@@ -71,7 +74,7 @@ export const action = async (args: ActionFunctionArgs) => {
 
 
 export default function ServicePeriodEnrollment() {
-
+  const { locale } = useLoaderData<typeof loader>();
   return (
     <>
       <Header />
@@ -93,8 +96,9 @@ export default function ServicePeriodEnrollment() {
       <FormCard
         title="Students"
         description="Enter Students"
-        footer={<FooterAdults />}
+        footer={<AddStudentDialog lng={locale} />}
       >
+        <pre>{JSON.stringify(locale, null, 2)}</pre>
         <ContentStudents />
       </FormCard>
       <FormCard
