@@ -51,10 +51,13 @@ export const action = async (args: ActionFunctionArgs) => {
   const type = formInput.get("type");
 
   if (type === "adults") {
-    await setTimeout(() => {
-      console.log("adults");
+    // create 4 second delay
+    const test = await setTimeout(() => {
+      return "test"
     }, 2000);
-    return json({ success: true });
+
+    return json({ success: true, test });
+
   }
 
   return json({ success: false });

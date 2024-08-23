@@ -10,7 +10,7 @@ import {
   ShoppingCart,
   Users,
 } from "lucide-react"
-import { Link, NavLink } from "@remix-run/react"
+import { Form, Link, NavLink } from "@remix-run/react"
 import { Badge } from "~/components/ui/badge"
 import { Button } from "~/components/ui/button"
 import {
@@ -169,14 +169,29 @@ export default function UIShell({
                 </CardDescription>
               </CardHeader>
               <CardContent className="p-2 pt-0 md:p-4 md:pt-0">
-                <Button onClick={() => i18n.changeLanguage("es")} size="sm" className="w-full">
-                  Spanish
-                </Button>
+                <Form >
+
+                  <Button
+                    type="submit"
+                    name="lng"
+                    value="es"
+                    size="sm"
+                    className="w-full"
+                  >
+                    Spanish
+                  </Button>
+                  <Button
+                    type="submit"
+                    name="lng"
+                    value="en"
+                    size="sm"
+                    className="w-full"
+                  >
+                    English
+                  </Button>
+                </Form>
               </CardContent>
               <CardFooter>
-                <Button onClick={() => i18n.changeLanguage("en")} size="sm" className="w-full">
-                  English
-                </Button>
 
               </CardFooter>
             </Card>

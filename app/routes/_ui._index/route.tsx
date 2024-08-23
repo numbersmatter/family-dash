@@ -6,12 +6,13 @@ import { Button } from "~/components/ui/button"
 import { StatusCard } from "./components/status-card";
 import OpenOpportunities from "./components/opportunities-table";
 import { useTranslation } from "react-i18next";
+import i18nServer from "~/modules/i18n.server";
 
 
-export const meta: MetaFunction = () => {
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
   return [
-    { title: "New Remix App" },
-    { name: "description", content: "Welcome to Remix!" },
+    { title: data?.meta.title },
+    { name: "description", content: data?.meta.description },
   ];
 };
 
@@ -35,6 +36,11 @@ interface FoodOpportunity {
 
 
 export const loader = async (args: LoaderFunctionArgs) => {
+  const t = await i18nServer.getFixedT(args.request);
+  const meta = {
+    title: t("welcome"),
+    description: t("welcomeDescription"),
+  };
 
   const enrollments = [
     {
@@ -68,7 +74,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
   ]
 
 
-  return json({ enrollments, opportunities });
+  return json({ enrollments, opportunities, meta });
 };
 
 
