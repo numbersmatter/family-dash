@@ -107,6 +107,7 @@ export function AddressFormDialog() {
                     </Label>
                     <Input
                       id={field.id}
+                      name={field.id}
                       defaultValue={field.value}
                       className="col-span-3"
                     />
