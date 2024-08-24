@@ -20,6 +20,7 @@ import { NumberAdults } from "./components/number-adults";
 import { userInfo } from "~/lib/business-logic/signed-in.server";
 import { AddStudentDialog } from "./components/add-student-dialog";
 import i18nServer from "~/modules/i18n.server";
+import { AddMinorDialog } from "./components/add-minor-dialog";
 
 
 
@@ -104,7 +105,7 @@ export default function ServicePeriodEnrollment() {
       <FormCard
         title="Unenrolled Minors"
         description="Enter those under 18 who are not enrolled in Thomasville City Schools"
-        footer={<FooterMinors />}
+        footer={<AddMinorDialog lng={locale} />}
       >
         <ContentMinors />
       </FormCard>

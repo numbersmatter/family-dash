@@ -1,4 +1,3 @@
-
 import {
   Bell,
   CircleUser,
@@ -61,12 +60,12 @@ const main_nav: Array<{ id: NavId, name: string, to: string, icon: ElementType }
     to: "/food-opportunities",
     icon: ShoppingCart
   },
-  {
-    id: "history",
-    name: "Services Received",
-    to: "/service-history",
-    icon: LineChart
-  }
+  // {
+  //   id: "history",
+  //   name: "Services Received",
+  //   to: "/service-history",
+  //   icon: LineChart
+  // }
 ]
 
 export interface NavNotification {
