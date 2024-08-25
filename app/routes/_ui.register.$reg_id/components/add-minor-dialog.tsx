@@ -81,7 +81,7 @@ export function AddMinorDialog({ lng }: { lng?: "es" | "en" | string }) {
             </div>
           </div>
           <DialogFooter>
-            <Button variant={"default"} name={"type"} value={"minor"} type="submit">
+            <Button variant={"default"} name={"type"} value={"addMinor"} type="submit">
               {lang.submit}
             </Button>
           </DialogFooter>

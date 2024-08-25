@@ -1,6 +1,14 @@
-import { useFetcher } from "@remix-run/react";
+import { useFetcher, useParams } from "@remix-run/react";
 import { Button } from "~/components/ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "~/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from "~/components/ui/dialog";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import {
@@ -12,9 +20,46 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select"
+import { action } from "~/routes/api.register.$reg_id.students/route";
+import { useEffect, useState } from "react";
+import { useForm, getFormProps, getInputProps, getSelectProps } from "@conform-to/react";
+import { parseWithZod } from "@conform-to/zod";
+import { AddStudentSchema } from "../schemas";
 
 export function AddStudentDialog({ lng }: { lng?: "es" | "en" | string }) {
-  const fetcher = useFetcher();
+  const fetcher = useFetcher<typeof action>();
+  const params = useParams();
+  const reg_id = params.reg_id ?? "no-id";
+  const [open, setOpen] = useState(false);
+  const [form, fields] = useForm({
+    // Sync the result of last submission
+    lastResult: fetcher.data,
+
+    // Reuse the validation logic on the client
+    onValidate({ formData }) {
+      return parseWithZod(formData, { schema: AddStudentSchema });
+    },
+    defaultValue: {
+      fname: "",
+      lname: "",
+      school: "",
+    },
+
+    shouldRevalidate: 'onBlur',
+  })
+
+  const isFetching = fetcher.state !== "idle";
+  const success = fetcher.data?.status === "success" ? true : false;
+
+  useEffect(() => {
+    if (success && !isFetching) {
+      setOpen(false);
+    }
+  }, [success, isFetching]);
+
+
+
+  // const errors = fetcher.data?.errors ?? {}
 
   const english = {
     button: "Add Student",
@@ -40,8 +85,10 @@ export function AddStudentDialog({ lng }: { lng?: "es" | "en" | string }) {
 
   const lang = lng === "es" ? spanish : english;
 
+  const actionUrl = `/api/register/${reg_id}/students`;
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="default">
           {lang.button}
@@ -54,61 +101,78 @@ export function AddStudentDialog({ lng }: { lng?: "es" | "en" | string }) {
             {lang.description}
           </DialogDescription>
         </DialogHeader>
-        <fetcher.Form method="post">
+        <fetcher.Form method="post"
+          {...getFormProps(form)}
+
+          action={actionUrl}
+        >
 
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="fname" className="text-right">
+              <Label htmlFor={fields.fname.id} className="text-right">
                 {lang.fname}
               </Label>
               <Input
-                id="fname"
-                name={"fname"}
                 defaultValue=""
                 className="col-span-3"
+                {...getInputProps(fields.fname, { type: "text" })}
               />
+              <div className="text-red-500 col-start-2 col-span-3">
+                {fields.fname.errors}
+              </div>
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="lname" className="text-right">
+              <Label htmlFor={fields.lname.id} className="text-right">
                 {lang.lname}
               </Label>
               <Input
-                id="lname"
-                name={"lname"}
                 defaultValue=""
                 className="col-span-3"
+                {...getInputProps(fields.lname, { type: "text" })}
               />
+              <div className="text-red-500 col-start-2 col-span-3">
+                {fields.lname.errors}
+              </div>
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="school" className="text-right">
+              <Label htmlFor={"school"} className="text-right">
                 {lang.school}
               </Label>
-              <Select name={"school"}>
-                <SelectTrigger className="w-[200px]">
-                  <SelectValue placeholder={lang.schoolSelect} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectLabel>Schools</SelectLabel>
-                    <SelectItem value="tps">
-                      Thomasville Primary
-                    </SelectItem>
-                    <SelectItem value="lde">
-                      Liberty Drive Elementary
-                    </SelectItem>
-                    <SelectItem value="tms">
-                      Thomasville Middle
-                    </SelectItem>
-                    <SelectItem value="ths">
-                      Thomasville High
-                    </SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
+              <div className="col-span-3">
+                <Select
+                  {...getSelectProps(fields.school)}
+                  defaultValue=""
+                >
+                  <SelectTrigger className="w-[200px]">
+                    <SelectValue placeholder={lang.schoolSelect} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>Schools</SelectLabel>
+                      <SelectItem value="tps">
+                        Thomasville Primary
+                      </SelectItem>
+                      <SelectItem value="lde">
+                        Liberty Drive Elementary
+                      </SelectItem>
+                      <SelectItem value="tms">
+                        Thomasville Middle
+                      </SelectItem>
+                      <SelectItem value="ths">
+                        Thomasville High
+                      </SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="text-red-500 col-span-3 col-start-2">
+                {fields.school.errors}
+              </div>
             </div>
+
           </div>
           <DialogFooter>
-            <Button name="type" value="students" type="submit">
+            <Button name="type" value="addStudent" type="submit">
               {lang.submit}
             </Button>
           </DialogFooter>

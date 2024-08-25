@@ -13,7 +13,9 @@ import { Input } from "~/components/ui/input"
 import { Label } from "~/components/ui/label"
 import { action, loader } from "../route"
 import { useEffect, useState } from "react"
-import { use } from "i18next"
+import { getFormProps, getInputProps, useForm } from "@conform-to/react"
+import { parseWithZod } from "@conform-to/zod"
+import { addressSchema } from "../schemas"
 
 export function AddressContent() {
   const { address } = useLoaderData<typeof loader>()
@@ -69,15 +71,35 @@ export function AddressContent() {
   )
 }
 
-export function AddressFormDialog() {
+export function AddressFormDialog({
+  locale
+}: {
+  locale?: "es" | "en" | string
+}) {
   const { address } = useLoaderData<typeof loader>();
   const [open, setOpen] = useState(false);
   const fetcher = useFetcher<typeof action>();
+  const [form, fields] = useForm({
+    // Sync the result of last submission
 
-  const reply = fetcher.data
+
+    // Reuse the validation logic on the client
+    onValidate({ formData }) {
+      return parseWithZod(formData, { schema: addressSchema });
+    },
+
+    defaultValue: {
+      street: address.street,
+      unit: address.unit,
+      city: address.city,
+      state: "NC",
+      zip: address.zip,
+    },
+    shouldRevalidate: 'onBlur',
+  })
+
   const isFetching = fetcher.state !== "idle";
-
-  const success = reply?.success ?? false;
+  const success = fetcher.data?.status === "success" ? true : false;
 
   useEffect(() => {
     if (success && !isFetching) {
@@ -85,81 +107,108 @@ export function AddressFormDialog() {
     }
   }, [success, isFetching])
 
+  const english = {
+    button: "Update",
+    title: "Address",
+    description: "Update your address.",
+    street: "Street",
+    unit: "Unit",
+    city: "City",
+    state: "State",
+    zip: "Zip",
+    submit: "Submit",
+  }
+
+  const spanish = {
+    button: "Actualizar",
+    title: "Dirección",
+    description: "Actualiza tu dirección.",
+    street: "Calle",
+    unit: "Unidad",
+    city: "Ciudad",
+    state: "Estado",
+    zip: "Código Postal",
+    submit: "Enviar",
+  }
+
+  const lang = locale === "es" ? spanish : english;
 
 
-  const fields = [
-    { id: "street", label: "Street", type: "text", value: address.street, errors: [] },
-    { id: "unit", label: "Unit", type: "text", value: address.unit, errors: [] },
-    { id: "city", label: "City", type: "text", value: address.city, errors: [] },
-    // { id: "state", label: "State", type: "select", value: address.state, errors: [{ id: "city", message: "Please select your state" }] },
-    { id: "zip", label: "Zip", type: "text", value: address.zip, errors: [] },
-  ]
 
-  // @ts-expect-error - I know more than typescript
-  const errors: Record<string, string[]> = reply?.error ?? {}
+  const fieldIds = ["street", "unit", "city", "state", "zip"]
+
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline">Edit Address</Button>
+        <Button >
+          {lang.button}
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle>Address</DialogTitle>
+          <DialogTitle>
+            {lang.title}
+          </DialogTitle>
           <DialogDescription>
-            Make changes to your address. Click save when you&apos;re done.
+            {lang.description}
           </DialogDescription>
         </DialogHeader>
-        <fetcher.Form method="post">
+        <fetcher.Form method="post" {...getFormProps(form)}>
 
           <div className="grid gap-4 py-4">
-            {
-              fields.map((field) => {
-                const error = errors[field.id] ?? []
-                return (
-                  <div key={field.id} className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor={field.id} className="text-right">
-                      {field.label}
-                    </Label>
-                    <Input
-                      id={field.id}
-                      name={field.id}
-                      defaultValue={field.value}
-                      className="col-span-3"
-                    />
-                    <div className="col-start-2 col-span-3 ">
-                      {error.map((error) => (
-                        <p className={"pb-3 text-red-600"} key={error}>
-                          {error}
-                        </p>
-                      ))}
-                    </div>
-                  </div>
-                )
-              }
-              )}
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor={"state"} className="text-right">
-                State
+              <Label htmlFor={fields.street.id} className="text-right">
+                {lang.street}
               </Label>
               <Input
-                id={"state"}
-                name={"state"}
-                value="NC"
-                readOnly
                 className="col-span-3"
+                {...getInputProps(fields.street, { type: "text" })}
               />
-              <div className="col-start-2 col-span-3 ">
-                {errors["state"] && errors["state"].map((error) => (
-                  <p className={"pb-3 text-red-600"} key={error}>
-                    {error}
-                  </p>
-                ))}
+              <div className="text-red-500 col-start-2 col-span-3">
+                {fields.street.errors}
+              </div>
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor={fields.unit.id} className="text-right">
+                {lang.unit}
+              </Label>
+              <Input
+                className="col-span-3"
+                {...getInputProps(fields.unit, { type: "text" })}
+              />
+              <div className="text-red-500 col-start-2 col-span-3">
+                {fields.unit.errors}
+              </div>
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor={fields.city.id} className="text-right">
+                {lang.city}
+              </Label>
+              <Input
+                className="col-span-3"
+                {...getInputProps(fields.city, { type: "text" })}
+              />
+              <div className="text-red-500 col-start-2 col-span-3">
+                {fields.city.errors}
+              </div>
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor={fields.state.id} className="text-right">
+                {lang.state}
+              </Label>
+              <Input
+                className="col-span-3"
+                {...getInputProps(fields.state, { type: "text" })}
+                readOnly
+              />
+              <div className="text-red-500 col-start-2 col-span-3">
+                {fields.state.errors}
               </div>
             </div>
           </div>
           <DialogFooter>
-            <Button name="type" value="address" type="submit">
+            <Button name="type" value="updateAddress" type="submit">
               Save changes
             </Button>
           </DialogFooter>

@@ -14,6 +14,9 @@ import {
   DrawerTrigger,
 } from "~/components/ui/drawer"
 import { action, loader } from "../route"
+import { useForm } from "@conform-to/react"
+import { parseWithZod } from "@conform-to/zod"
+import { adultsSchema } from "../schemas"
 
 
 
@@ -27,12 +30,26 @@ export function NumberAdults() {
   const fetcher = useFetcher<typeof action>();
   const isFetching = fetcher.state !== "idle";
   const postedNumber = fetcher.formData?.get("adults") ?? adults;
-  const success = fetcher.data?.success ?? false;
+  const success = fetcher.data?.status === "success" ? true : false;
+
+  const [form, fields] = useForm({
+    // Sync the result of last submission
+
+
+    // Reuse the validation logic on the client
+    onValidate({ formData }) {
+      return parseWithZod(formData, { schema: adultsSchema });
+    },
+    defaultValue: {
+      adults: adults,
+    },
+    shouldRevalidate: 'onBlur',
+  })
 
   const displayAdults = isFetching ? `${postedNumber}` : `${adults}`
 
   const handleSubmit = () => {
-    fetcher.submit({ adults: count, type: "adults" }, { method: "post" })
+    fetcher.submit({ adults: count, type: "updateAdults" }, { method: "post" })
 
   }
 
