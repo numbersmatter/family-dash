@@ -11,8 +11,9 @@ import {
 } from "~/components/ui/dialog"
 import { Input } from "~/components/ui/input"
 import { Label } from "~/components/ui/label"
-import { loader } from "../route"
-import { useState } from "react"
+import { action, loader } from "../route"
+import { useEffect, useState } from "react"
+import { use } from "i18next"
 
 export function AddressContent() {
   const { address } = useLoaderData<typeof loader>()
@@ -71,7 +72,18 @@ export function AddressContent() {
 export function AddressFormDialog() {
   const { address } = useLoaderData<typeof loader>();
   const [open, setOpen] = useState(false);
-  const fetcher = useFetcher();
+  const fetcher = useFetcher<typeof action>();
+
+  const reply = fetcher.data
+  const isFetching = fetcher.state !== "idle";
+
+  const success = reply?.success ?? false;
+
+  useEffect(() => {
+    if (success && !isFetching) {
+      setOpen(false)
+    }
+  }, [success, isFetching])
 
 
 
@@ -79,9 +91,12 @@ export function AddressFormDialog() {
     { id: "street", label: "Street", type: "text", value: address.street, errors: [] },
     { id: "unit", label: "Unit", type: "text", value: address.unit, errors: [] },
     { id: "city", label: "City", type: "text", value: address.city, errors: [] },
-    { id: "state", label: "State", type: "select", value: address.state, errors: [{ id: "city", message: "Please select your state" }] },
+    // { id: "state", label: "State", type: "select", value: address.state, errors: [{ id: "city", message: "Please select your state" }] },
     { id: "zip", label: "Zip", type: "text", value: address.zip, errors: [] },
   ]
+
+  // @ts-expect-error - I know more than typescript
+  const errors: Record<string, string[]> = reply?.error ?? {}
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -100,6 +115,7 @@ export function AddressFormDialog() {
           <div className="grid gap-4 py-4">
             {
               fields.map((field) => {
+                const error = errors[field.id] ?? []
                 return (
                   <div key={field.id} className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor={field.id} className="text-right">
@@ -112,9 +128,9 @@ export function AddressFormDialog() {
                       className="col-span-3"
                     />
                     <div className="col-start-2 col-span-3 ">
-                      {field.errors.map((error) => (
-                        <p className={"pb-3 text-red-600"} key={error.id}>
-                          {error.message}
+                      {error.map((error) => (
+                        <p className={"pb-3 text-red-600"} key={error}>
+                          {error}
                         </p>
                       ))}
                     </div>
@@ -122,10 +138,30 @@ export function AddressFormDialog() {
                 )
               }
               )}
-
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor={"state"} className="text-right">
+                State
+              </Label>
+              <Input
+                id={"state"}
+                name={"state"}
+                value="NC"
+                readOnly
+                className="col-span-3"
+              />
+              <div className="col-start-2 col-span-3 ">
+                {errors["state"] && errors["state"].map((error) => (
+                  <p className={"pb-3 text-red-600"} key={error}>
+                    {error}
+                  </p>
+                ))}
+              </div>
+            </div>
           </div>
           <DialogFooter>
-            <Button type="submit">Save changes</Button>
+            <Button name="type" value="address" type="submit">
+              Save changes
+            </Button>
           </DialogFooter>
         </fetcher.Form>
       </DialogContent>

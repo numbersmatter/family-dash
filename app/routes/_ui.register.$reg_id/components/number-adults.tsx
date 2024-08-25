@@ -1,6 +1,6 @@
 import { useFetcher, useLoaderData } from "@remix-run/react"
 import { Minus, Plus } from "lucide-react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Button } from "~/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card"
 import {
@@ -13,7 +13,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "~/components/ui/drawer"
-import { loader } from "../route"
+import { action, loader } from "../route"
 
 
 
@@ -24,17 +24,24 @@ export function NumberAdults() {
   const increaseAdults = () => setCount(count + 1)
   const decreaseAdults = () => setCount(count - 1)
 
-  const fetcher = useFetcher();
+  const fetcher = useFetcher<typeof action>();
   const isFetching = fetcher.state !== "idle";
   const postedNumber = fetcher.formData?.get("adults") ?? adults;
+  const success = fetcher.data?.success ?? false;
 
   const displayAdults = isFetching ? `${postedNumber}` : `${adults}`
 
   const handleSubmit = () => {
     fetcher.submit({ adults: count, type: "adults" }, { method: "post" })
 
-    return setOpen(false)
   }
+
+  useEffect(() => {
+    if (success && !isFetching) {
+      setOpen(false)
+    }
+  }, [success, isFetching])
+
 
 
 

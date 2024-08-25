@@ -21,6 +21,10 @@ import { userInfo } from "~/lib/business-logic/signed-in.server";
 import { AddStudentDialog } from "./components/add-student-dialog";
 import i18nServer from "~/modules/i18n.server";
 import { AddMinorDialog } from "./components/add-minor-dialog";
+import { parseWithZod } from "@conform-to/zod";
+import { addressSchema, adultsSchema, studentsSchema } from "./schemas";
+import { mutateAddress } from "./mutations/mutate-address.server";
+import { mutateStudents } from "./mutations/mutate-students.server";
 
 
 
@@ -54,22 +58,42 @@ export const loader = async (args: LoaderFunctionArgs) => {
 
 export const action = async (args: ActionFunctionArgs) => {
   const formInput = await args.request.formData();
+  const { userId } = await userInfo(args);
 
   const type = formInput.get("type");
 
   if (type === "adults") {
     // create 4 second delay
-    const test = await setTimeout(() => {
-      return "test"
-    }, 2000);
+    const submission = parseWithZod(formInput, { schema: adultsSchema });
+    if (submission.status === "success") {
+      const test = { id: "test", name: "test" }
 
-    return json({ success: true, test });
-
+      return json({ success: true, data: test });
+    }
+    return json({ success: false, status: "error", error: submission.error, payload: submission.payload });
   }
 
-  return json({ success: false });
-};
+  if (type === "address") {
+    const submission = parseWithZod(formInput, { schema: addressSchema });
+    if (submission.status === "success") {
+      const write = await mutateAddress({ address: submission.value, userId });
+      return json({ success: true, data: write });
+    }
+    return json({ success: false, status: "error", error: submission.error, payload: submission.payload });
+  }
 
+  if (type === "students") {
+    const submission = parseWithZod(formInput, { schema: studentsSchema });
+    if (submission.status === "success") {
+      const write = await mutateStudents({ students: submission.value, userId });
+      return json({ success: true, data: write });
+    }
+    return json({ success: false, status: "error", error: submission.error, payload: submission.payload });
+  }
+
+
+  return json({ success: false, status: "error", error: { type: ["Unknown type"] } });
+}
 
 
 
@@ -112,4 +136,4 @@ export default function ServicePeriodEnrollment() {
       <SubmitCard />
     </>
   )
-} 
+}

@@ -108,7 +108,7 @@ export function AddStudentDialog({ lng }: { lng?: "es" | "en" | string }) {
             </div>
           </div>
           <DialogFooter>
-            <Button variant={"default"} type="submit">
+            <Button name="type" value="students" type="submit">
               {lang.submit}
             </Button>
           </DialogFooter>
