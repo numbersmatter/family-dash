@@ -32,6 +32,7 @@ import { Sheet, SheetContent, SheetTrigger } from "~/components/ui/sheet"
 import { ElementType, } from "react"
 import { cn } from "~/lib/utils"
 import { useTranslation } from "react-i18next"
+import { SignedIn, UserButton } from "@clerk/remix"
 
 export type NavId =
   "dashboard"
@@ -162,7 +163,7 @@ export default function UIShell({
             </nav>
           </div>
           <div className="mt-auto p-4">
-            <Card x-chunk="dashboard-02-chunk-0">
+            {/* <Card x-chunk="dashboard-02-chunk-0">
               <CardHeader className="p-2 pt-0 md:p-4">
                 <CardTitle> Langauge</CardTitle>
                 <CardDescription>
@@ -194,7 +195,12 @@ export default function UIShell({
               <CardFooter>
 
               </CardFooter>
-            </Card>
+            </Card> */}
+            <SignedIn>
+              <UserButton
+                showName
+              />
+            </SignedIn>
           </div>
         </div>
       </div>
@@ -245,40 +251,19 @@ export default function UIShell({
                 }
               </nav>
               <div className="mt-auto">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Sign in / Sign Out</CardTitle>
-                    <CardDescription>
-
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <Button size="sm" className="w-full">
-                      Sign in
-                    </Button>
-                  </CardContent>
-                </Card>
+                <SignedIn>
+                  <UserButton
+                    showName
+                  />
+                </SignedIn>
               </div>
             </SheetContent>
           </Sheet>
           <div className="w-full flex-1">
           </div>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="secondary" size="icon" className="rounded-full">
-                <CircleUser className="h-5 w-5" />
-                <span className="sr-only">Toggle user menu</span>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>Settings</DropdownMenuItem>
-              <DropdownMenuItem>Support</DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>Logout</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <SignedIn>
+            <UserButton />
+          </SignedIn>
         </header>
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
           {children}

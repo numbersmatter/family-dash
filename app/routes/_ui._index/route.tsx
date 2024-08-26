@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { getDashboardData } from "./data-fetchers";
 import { userInfo } from "~/lib/business-logic/signed-in.server";
 import i18nServer from "~/modules/i18n.server";
+import { getAuth } from "@clerk/remix/ssr.server";
 
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
@@ -27,6 +28,10 @@ export type Enrollment = {
 
 
 export const loader = async (args: LoaderFunctionArgs) => {
+  const { userId } = await getAuth(args);
+  if (!userId) {
+    return redirect("/sign-in")
+  }
   const { registered } = await userInfo(args);
 
   const pageData = await getDashboardData(args);

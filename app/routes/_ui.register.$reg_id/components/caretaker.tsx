@@ -21,6 +21,7 @@ import { Label } from "~/components/ui/label"
 import { Link, useLoaderData } from "@remix-run/react"
 import { loader } from "../route"
 import { FormCard } from "./form-card"
+import { useUser } from "@clerk/remix"
 
 type Person = {
   name: string
@@ -36,11 +37,13 @@ export function CaretakerCard() {
   const english = {
     title: "Primary Caregiver",
     description: "Contact Information",
+    edit: "Edit Profile",
   }
 
   const spanish = {
     title: "Contacto principal",
     description: "Información de contacto",
+    edit: "Editar perfil",
   }
 
   const lang = locale === "es" ? spanish : english
@@ -50,7 +53,7 @@ export function CaretakerCard() {
     <FormCard
       title={lang.title}
       description={lang.description}
-      footer={< CaretakerFormDialog />}
+      footer={<Link to="/profile"><Button variant="outline">{lang.edit}</Button></Link>}
     >
       <ContentCaretakers />
     </FormCard>
@@ -61,6 +64,7 @@ export function CaretakerCard() {
 
 function ContentCaretakers() {
   const { primary_caretaker, usage, locale } = useLoaderData<typeof loader>();
+  const { user } = useUser();
 
   const english = {
     title: "Contact Information",
@@ -103,7 +107,7 @@ function ContentCaretakers() {
               {lang.firstName}
             </dt>
             <dd className="mt-1 text-sm leading-6 text-gray-700 sm:mt-2">
-              {primary_caretaker.fname}
+              {user?.firstName}
             </dd>
           </div>
           <div className="border-t border-gray-100 px-4 py-6 sm:col-span-1 sm:px-0">
@@ -111,7 +115,7 @@ function ContentCaretakers() {
               {lang.lastName}
             </dt>
             <dd className="mt-1 text-sm leading-6 text-gray-700 sm:mt-2">
-              {primary_caretaker.lname}
+              {user?.lastName}
             </dd>
           </div>
           <div className="border-t border-gray-100 px-4 py-6 sm:col-span-1 sm:px-0">
@@ -119,7 +123,7 @@ function ContentCaretakers() {
               {lang.email}
             </dt>
             <dd className="mt-1 text-sm leading-6 text-gray-700 sm:mt-2">
-              {primary_caretaker.email}
+              {user?.emailAddresses[0].emailAddress}
             </dd>
           </div>
           <div className="border-t border-gray-100 px-4 py-6 sm:col-span-1 sm:px-0">
@@ -127,7 +131,7 @@ function ContentCaretakers() {
               {lang.cellPhone}
             </dt>
             <dd className="mt-1 text-sm leading-6 text-gray-700 sm:mt-2">
-              {primary_caretaker.phone}
+              {user?.phoneNumbers[0].phoneNumber}
             </dd>
           </div>
           <div className="border-t border-gray-100 px-4 py-6 sm:col-span-2 sm:px-0">

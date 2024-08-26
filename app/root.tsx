@@ -1,6 +1,6 @@
-import { json, useLoaderData, useRouteLoaderData } from "@remix-run/react"
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import {
+  json, useLoaderData, useRouteLoaderData,
   Links,
   Meta,
   Outlet,
@@ -13,21 +13,25 @@ import i18nServer, { localeCookie } from "./modules/i18n.server";
 import { useTranslation, } from "react-i18next";
 import { useChangeLanguage } from "remix-i18next/react";
 import { userInfo } from "./lib/business-logic/signed-in.server";
-
+import { rootAuthLoader } from "@clerk/remix/ssr.server";
+import { ClerkApp } from "@clerk/remix";
 
 export const handle = { i18n: ["translation"] }
 
 export const loader = async (args: LoaderFunctionArgs) => {
-  let locale = await i18nServer.getLocale(args.request);
-  // const locale = "en"
-  const user = await userInfo(args);
-  return json(
-    {
-      locale,
-      user
-    },
-    { headers: { "Set-Cookie": await localeCookie.serialize(locale) } }
-  );
+  return rootAuthLoader(args, async (request) => {
+
+    let locale = await i18nServer.getLocale(args.request);
+    // const locale = "en"
+    const user = await userInfo(args);
+    return json(
+      {
+        locale,
+        user
+      },
+      { headers: { "Set-Cookie": await localeCookie.serialize(locale) } }
+    );
+  })
 };
 
 export const action = async (args: ActionFunctionArgs) => {
@@ -77,8 +81,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default function App() {
+function App() {
   const { locale } = useLoaderData<typeof loader>();
   useChangeLanguage(locale);
   return <Outlet />;
 }
+
+export default ClerkApp(App);
+
