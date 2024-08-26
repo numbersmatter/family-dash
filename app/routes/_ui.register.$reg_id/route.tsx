@@ -1,4 +1,4 @@
-import { json, useLoaderData } from "@remix-run/react"
+import { json, useLoaderData, useRouteLoaderData } from "@remix-run/react"
 import type { LoaderFunctionArgs, ActionFunctionArgs } from "@remix-run/node";
 import { FormCard } from "./components/form-card";
 import {
@@ -27,13 +27,15 @@ import {
   removeMinor,
   updateMinor
 } from "./mutations/mutate-minor.server";
-
+import { loader as rootloader } from "~/root"
 
 
 export const loader = async (args: LoaderFunctionArgs) => {
   const reg_id = args.params.reg_id ?? "no-id";
   const { userId } = await userInfo(args);
   let locale = await i18nServer.getLocale(args.request);
+  const t = await i18nServer.getFixedT(args.request);
+
 
   const data = await getRegisterData({ reg_id, userId });
 
@@ -111,12 +113,15 @@ export const action = async (args: ActionFunctionArgs) => {
 
 export default function ServicePeriodEnrollment() {
   const { locale } = useLoaderData<typeof loader>();
+  const rootData = useRouteLoaderData<typeof rootloader>("root");
+
+
   return (
     <>
       <Header />
       <CaretakerCard />
       <AddressCard />
-      <NumberAdults locale={locale} />
+      <NumberAdults />
       <StudentsCard />
       <MinorsCard />
       <SubmitCard />

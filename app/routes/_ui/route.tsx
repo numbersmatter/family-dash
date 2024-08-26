@@ -9,9 +9,9 @@ import i18nServer from "~/modules/i18n.server";
 
 export const loader = async (args: LoaderFunctionArgs) => {
   const { userId } = await userInfo(args);
-  let locale = await i18nServer.getLocale(args.request);
+  const t = await i18nServer.getFixedT(args.request);
 
-  return json({ locale });
+  return json({});
 };
 
 

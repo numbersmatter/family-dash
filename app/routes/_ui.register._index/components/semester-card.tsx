@@ -1,4 +1,4 @@
-import { Form } from "@remix-run/react";
+import { Form, Link } from "@remix-run/react";
 import { Button } from "~/components/ui/button";
 import {
   Card,
@@ -8,7 +8,7 @@ import {
   CardTitle
 } from "~/components/ui/card";
 
-export type FamilyStatus = "open" | "applied" | "enrolled";
+export type FamilyStatus = "open" | "in-progress" | "accepted" | "declined";
 
 export interface Semester {
   id: string;
@@ -17,6 +17,7 @@ export interface Semester {
   helpText: string;
   enrollement: boolean;
   familyStatus: FamilyStatus;
+  reg_id: string;
 }
 
 
@@ -46,13 +47,17 @@ export function SemesterCard({ semester }: { semester: Semester }) {
           )
         }
         {
-          semester.familyStatus === "applied" && (
-            <p>Applied</p>
-          )
-        }
-        {
-          semester.familyStatus === "enrolled" && (
-            <p>Enrolled</p>
+          semester.familyStatus !== "open" && (
+            <Link
+              to={`/register/${semester.reg_id}`}
+              className="text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+            >
+              <span className="text-lg font-semibold">
+                {semester.familyStatus === "in-progress" && "Continue"}
+                {semester.familyStatus === "accepted" && "Review"}
+                {semester.familyStatus === "declined" && "Review"}
+              </span>
+            </Link>
           )
         }
       </CardContent>

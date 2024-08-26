@@ -1,4 +1,4 @@
-import { useLoaderData } from "@remix-run/react"
+import { useLoaderData, useRouteLoaderData } from "@remix-run/react"
 import { EllipsisVerticalIcon } from "lucide-react"
 import { Button } from "~/components/ui/button"
 import {
@@ -9,6 +9,7 @@ import {
   DropdownMenuTrigger
 } from "~/components/ui/dropdown-menu"
 import { loader } from "../route"
+import { loader as rootloader } from "~/root"
 import { FormCard } from "./form-card"
 import { AddStudentDialog } from "./add-student-dialog"
 
@@ -43,7 +44,7 @@ const students: Student[] = [
 ]
 
 export function StudentsCard() {
-  const { locale } = useLoaderData<typeof loader>()
+  const rootData = useRouteLoaderData<typeof rootloader>("root");
   const english = {
     title: "Students",
     description: "Enter Students",
@@ -54,7 +55,7 @@ export function StudentsCard() {
     description: "Ingrese estudiantes",
   }
 
-  const lang = locale === "es" ? spanish : english
+  const lang = rootData?.locale === "es" ? spanish : english
 
   return (
     <FormCard
@@ -68,7 +69,8 @@ export function StudentsCard() {
 }
 
 function ContentStudents() {
-  const { locale } = useLoaderData<typeof loader>()
+  const rootData = useRouteLoaderData<typeof rootloader>("root");
+
 
   const english = {
     add: "Add Student",
@@ -82,7 +84,7 @@ function ContentStudents() {
     remove: "Eliminar",
   }
 
-  const lang = locale === "es" ? spanish : english
+  const lang = rootData?.locale === "es" ? spanish : english
 
 
   return (
