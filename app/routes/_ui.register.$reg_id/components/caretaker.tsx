@@ -20,12 +20,8 @@ import { Input } from "~/components/ui/input"
 import { Label } from "~/components/ui/label"
 import { Link, useLoaderData } from "@remix-run/react"
 import { loader } from "../route"
+import { FormCard } from "./form-card"
 
-export function CaretakerContent() {
-  return (
-    <p>Please fill out the form below to enroll in the Primary Caretaker Program.</p>
-  )
-}
 type Person = {
   name: string
   family_role: string
@@ -34,34 +30,77 @@ type Person = {
   id: string
 }
 
-const people: Person[] = [
-  {
-    name: 'Leslie Foster',
-    family_role: 'caretaker',
-    role: 'Parent',
-    imageUrl:
-      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    id: 'abc',
-  },
-];
+export function CaretakerCard() {
+  const { locale } = useLoaderData<typeof loader>()
 
-export function ContentCaretakers() {
-  const { primary_caretaker, usage } = useLoaderData<typeof loader>();
+  const english = {
+    title: "Primary Caregiver",
+    description: "Contact Information",
+  }
+
+  const spanish = {
+    title: "Contacto principal",
+    description: "Información de contacto",
+  }
+
+  const lang = locale === "es" ? spanish : english
+
+  return (
+
+    <FormCard
+      title={lang.title}
+      description={lang.description}
+      footer={< CaretakerFormDialog />}
+    >
+      <ContentCaretakers />
+    </FormCard>
+  )
+}
+
+
+
+function ContentCaretakers() {
+  const { primary_caretaker, usage, locale } = useLoaderData<typeof loader>();
+
+  const english = {
+    title: "Contact Information",
+    description: "Personal details and application.",
+    firstName: "First Name",
+    lastName: "Last Name",
+    email: "Email address",
+    cellPhone: "Cell Phone Number",
+    dataUsage: "Data Usage",
+    caretaker: "Caretaker",
+  }
+
+  const spanish = {
+    title: "Información de contacto",
+    description: "Datos personales y solicitud.",
+    firstName: "Nombre",
+    lastName: "Apellido",
+    email: "Dirección de correo electrónico",
+    cellPhone: "Número de teléfono celular",
+    dataUsage: "Uso de datos",
+    caretaker: "Carpintero",
+  }
+
+  const lang = locale === "es" ? spanish : english
+
   return (
     <div>
       <div className="px-4 sm:px-0">
         <h3 className="text-base font-semibold leading-7 text-gray-900">
-          Contact Information
+          {lang.title}
         </h3>
         <p className="mt-1 max-w-2xl text-sm leading-6 text-gray-500">
-          Personal details and application.
+          {lang.description}
         </p>
       </div>
       <div className="mt-6">
         <dl className="grid grid-cols-1 sm:grid-cols-2">
           <div className="border-t border-gray-100 px-4 py-6 sm:col-span-1 sm:px-0">
             <dt className="text-sm font-medium leading-6 text-gray-900">
-              First Name
+              {lang.firstName}
             </dt>
             <dd className="mt-1 text-sm leading-6 text-gray-700 sm:mt-2">
               {primary_caretaker.fname}
@@ -69,7 +108,7 @@ export function ContentCaretakers() {
           </div>
           <div className="border-t border-gray-100 px-4 py-6 sm:col-span-1 sm:px-0">
             <dt className="text-sm font-medium leading-6 text-gray-900">
-              Last Name
+              {lang.lastName}
             </dt>
             <dd className="mt-1 text-sm leading-6 text-gray-700 sm:mt-2">
               {primary_caretaker.lname}
@@ -77,7 +116,7 @@ export function ContentCaretakers() {
           </div>
           <div className="border-t border-gray-100 px-4 py-6 sm:col-span-1 sm:px-0">
             <dt className="text-sm font-medium leading-6 text-gray-900">
-              Email address
+              {lang.email}
             </dt>
             <dd className="mt-1 text-sm leading-6 text-gray-700 sm:mt-2">
               {primary_caretaker.email}
@@ -85,7 +124,7 @@ export function ContentCaretakers() {
           </div>
           <div className="border-t border-gray-100 px-4 py-6 sm:col-span-1 sm:px-0">
             <dt className="text-sm font-medium leading-6 text-gray-900">
-              Cell Phone Number
+              {lang.cellPhone}
             </dt>
             <dd className="mt-1 text-sm leading-6 text-gray-700 sm:mt-2">
               {primary_caretaker.phone}
@@ -93,7 +132,7 @@ export function ContentCaretakers() {
           </div>
           <div className="border-t border-gray-100 px-4 py-6 sm:col-span-2 sm:px-0">
             <dt className="text-sm font-medium leading-6 text-gray-900">
-              Data Usage
+              {lang.dataUsage}
             </dt>
             <dd className="mt-1 text-sm leading-6 text-gray-700 sm:mt-2">
               {usage.caretaker}
@@ -106,23 +145,37 @@ export function ContentCaretakers() {
 }
 
 
-export function CaretakerFormDialog() {
+function CaretakerFormDialog() {
+  const { locale } = useLoaderData<typeof loader>();
+  const english = {
+    title: "Edit Profile",
+    description: "Make changes to your profile here. Click save when you're done.",
+    save: "Save changes",
+  }
+
+  const spanish = {
+    title: "Editar perfil",
+    description: "Haga cambios en su perfil aquí. Haga clic en guardar cuando haya terminado.",
+    save: "Guardar cambios",
+  }
+
+  const lang = locale === "es" ? spanish : english
+
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline">Edit Profile</Button>
+        <Button variant="outline">{lang.title}</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Edit profile</DialogTitle>
+          <DialogTitle>{lang.title}</DialogTitle>
           <DialogDescription>
-            Make changes to your profile here. Click save when you&apos;re done.
+            {lang.description}
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="name" className="text-right">
-              Name
             </Label>
             <Input
               id="name"

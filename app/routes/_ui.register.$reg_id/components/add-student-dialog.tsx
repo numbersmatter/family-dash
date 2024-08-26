@@ -1,4 +1,4 @@
-import { useFetcher, useParams } from "@remix-run/react";
+import { useFetcher, useLoaderData, useParams } from "@remix-run/react";
 import { Button } from "~/components/ui/button";
 import {
   Dialog,
@@ -25,8 +25,10 @@ import { useEffect, useState } from "react";
 import { useForm, getFormProps, getInputProps, getSelectProps } from "@conform-to/react";
 import { parseWithZod } from "@conform-to/zod";
 import { AddStudentSchema } from "../schemas";
+import { loader } from "../route";
 
-export function AddStudentDialog({ lng }: { lng?: "es" | "en" | string }) {
+export function AddStudentDialog() {
+  const { locale } = useLoaderData<typeof loader>();
   const fetcher = useFetcher<typeof action>();
   const params = useParams();
   const reg_id = params.reg_id ?? "no-id";
@@ -83,9 +85,8 @@ export function AddStudentDialog({ lng }: { lng?: "es" | "en" | string }) {
     submit: "Enviar",
   }
 
-  const lang = lng === "es" ? spanish : english;
+  const lang = locale === "es" ? spanish : english;
 
-  const actionUrl = `/api/register/${reg_id}/students`;
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -103,8 +104,6 @@ export function AddStudentDialog({ lng }: { lng?: "es" | "en" | string }) {
         </DialogHeader>
         <fetcher.Form method="post"
           {...getFormProps(form)}
-
-          action={actionUrl}
         >
 
           <div className="grid gap-4 py-4">

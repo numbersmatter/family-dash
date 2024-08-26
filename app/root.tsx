@@ -1,5 +1,5 @@
 import { json, useLoaderData, useRouteLoaderData } from "@remix-run/react"
-import type { LoaderFunctionArgs } from "@remix-run/node";
+import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import {
   Links,
   Meta,
@@ -20,7 +20,19 @@ export const handle = { i18n: ["translation"] }
 export const loader = async (args: LoaderFunctionArgs) => {
   let locale = await i18nServer.getLocale(args.request);
   // const locale = "en"
-  const user = await userInfo();
+  const user = await userInfo(args);
+  return json(
+    {
+      locale,
+      user
+    },
+    { headers: { "Set-Cookie": await localeCookie.serialize(locale) } }
+  );
+};
+
+export const action = async (args: ActionFunctionArgs) => {
+  let locale = await i18nServer.getLocale(args.request);
+  const user = await userInfo(args);
   return json(
     {
       locale,

@@ -5,6 +5,7 @@ import OpenOpportunities from "./components/opportunities-table";
 import { useTranslation } from "react-i18next";
 import { getDashboardData } from "./data-fetchers";
 import { userInfo } from "~/lib/business-logic/signed-in.server";
+import i18nServer from "~/modules/i18n.server";
 
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
@@ -29,6 +30,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
   const { registered } = await userInfo(args);
 
   const pageData = await getDashboardData(args);
+  let locale = await i18nServer.getLocale(args.request);
 
 
 

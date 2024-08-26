@@ -20,7 +20,7 @@ import { adultsSchema } from "../schemas"
 
 
 
-export function NumberAdults() {
+export function NumberAdults({ locale }: { locale?: string }) {
   const { adults } = useLoaderData<typeof loader>()
   const [count, setCount] = useState(adults)
   const [open, setOpen] = useState(false)
@@ -59,25 +59,49 @@ export function NumberAdults() {
     }
   }, [success, isFetching])
 
+  const english = {
+    title: "Household Adults",
+    button: "Update",
+    decrease: "Decrease",
+    increase: "Increase",
+    description: "Include only nonstudents over 18",
+    adults: "Adults in Household",
+    drawerTitle: "Set Number of Adults",
+    cancel: "Cancel",
+  }
+
+  const spanish = {
+    title: "Adultos en la casa",
+    description: "Incluir solo no estudiantes mayores de 18",
+    adults: "Adultos en la casa",
+    drawerTitle: "Establecer el número de adultos",
+    button: "Actualizar",
+    decrease: "Disminuir",
+    increase: "Aumentar",
+    cancel: "Cancelar",
+  }
 
 
+  const lang = locale === "es" ? spanish : english
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Household Adults : {displayAdults}</CardTitle>
+        <CardTitle>{lang.title} : {displayAdults}</CardTitle>
       </CardHeader>
       <CardContent>
         <Drawer open={open} onOpenChange={setOpen}>
           <DrawerTrigger asChild>
-            <Button variant="default">Set Number of Adults</Button>
+            <Button variant="default">
+              {lang.button}
+            </Button>
           </DrawerTrigger>
           <DrawerContent>
             <div className="mx-auto w-full max-w-sm">
               <DrawerHeader>
-                <DrawerTitle>Set Number of Adults</DrawerTitle>
+                <DrawerTitle>{lang.drawerTitle}</DrawerTitle>
                 <DrawerDescription>
-                  Include only nonstudents over 18
+                  {lang.description}
                 </DrawerDescription>
               </DrawerHeader>
               <div className="p-4 pb-0">
@@ -90,14 +114,14 @@ export function NumberAdults() {
                     disabled={count <= 1}
                   >
                     <Minus className="h-4 w-4" />
-                    <span className="sr-only">Decrease</span>
+                    <span className="sr-only"> {lang.decrease}</span>
                   </Button>
                   <div className="flex-1 text-center">
                     <div className="text-7xl font-bold tracking-tighter">
                       {count}
                     </div>
                     <div className="text-[0.70rem] uppercase text-muted-foreground">
-                      Adults in Household
+                      {lang.title}
                     </div>
                   </div>
                   <Button
@@ -107,16 +131,16 @@ export function NumberAdults() {
                     onClick={increaseAdults}
                   >
                     <Plus className="h-4 w-4" />
-                    <span className="sr-only">Increase</span>
+                    <span className="sr-only">{lang.increase}</span>
                   </Button>
                 </div>
                 <div className="mt-3 h-[120px]">
                 </div>
               </div>
               <DrawerFooter>
-                <Button onClick={handleSubmit}>Submit</Button>
+                <Button onClick={handleSubmit}>{lang.button}</Button>
                 <DrawerClose asChild>
-                  <Button variant="outline">Cancel</Button>
+                  <Button variant="outline">{lang.cancel}</Button>
                 </DrawerClose>
               </DrawerFooter>
             </div>

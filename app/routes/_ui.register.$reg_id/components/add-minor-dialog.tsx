@@ -1,10 +1,12 @@
-import { useFetcher } from "@remix-run/react";
+import { useFetcher, useLoaderData } from "@remix-run/react";
 import { Button } from "~/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "~/components/ui/dialog";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
+import { loader } from "../route";
 
-export function AddMinorDialog({ lng }: { lng?: "es" | "en" | string }) {
+export function AddMinorDialog() {
+  const { locale } = useLoaderData<typeof loader>();
   const fetcher = useFetcher();
 
   const english = {
@@ -28,7 +30,7 @@ export function AddMinorDialog({ lng }: { lng?: "es" | "en" | string }) {
     submit: "Enviar",
   }
 
-  const lang = lng === "es" ? spanish : english;
+  const lang = locale === "es" ? spanish : english;
 
   return (
     <Dialog>

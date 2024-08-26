@@ -16,9 +16,61 @@ import { useEffect, useState } from "react"
 import { getFormProps, getInputProps, useForm } from "@conform-to/react"
 import { parseWithZod } from "@conform-to/zod"
 import { addressSchema } from "../schemas"
+import { FormCard } from "./form-card"
+
+
+export function AddressCard() {
+  const { locale } = useLoaderData<typeof loader>()
+  const english = {
+    title: "Address",
+    description: "Contact Information",
+  }
+
+  const spanish = {
+    title: "Dirección",
+    description: "Información de contacto",
+  }
+
+  const lang = locale === "es" ? spanish : english
+
+  return (
+    <FormCard
+      title={lang.title}
+      description={lang.description}
+      footer={<AddressFormDialog />}
+    >
+      <AddressContent />
+    </FormCard>
+  )
+}
+
 
 export function AddressContent() {
-  const { address } = useLoaderData<typeof loader>()
+  const { address, locale } = useLoaderData<typeof loader>()
+
+  const english = {
+    title: "Address",
+    description: "Update your address.",
+    street: "Street",
+    unit: "Unit",
+    city: "City",
+    state: "State",
+    zip: "Zip",
+    submit: "Submit",
+  }
+
+  const spanish = {
+    title: "Dirección",
+    description: "Actualiza tu dirección.",
+    street: "Calle",
+    unit: "Unidad",
+    city: "Ciudad",
+    state: "Estado",
+    zip: "Código Postal",
+    submit: "Enviar",
+  }
+
+  const lang = locale === "es" ? spanish : english;
 
   return (
     <div>
@@ -26,7 +78,7 @@ export function AddressContent() {
         <dl className="divide-y divide-gray-100">
           <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt className="text-sm font-medium leading-6 text-gray-900">
-              Street
+              {lang.street}
             </dt>
             <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
               {address.street}
@@ -34,7 +86,7 @@ export function AddressContent() {
           </div>
           <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt className="text-sm font-medium leading-6 text-gray-900">
-              Unit
+              {lang.unit}
             </dt>
             <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
               {address.unit}
@@ -42,7 +94,7 @@ export function AddressContent() {
           </div>
           <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt className="text-sm font-medium leading-6 text-gray-900">
-              City
+              {lang.city}
             </dt>
             <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
               {address.city}
@@ -50,7 +102,7 @@ export function AddressContent() {
           </div>
           <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt className="text-sm font-medium leading-6 text-gray-900">
-              State
+              {lang.state}
             </dt>
             <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
               {address.state}
@@ -58,7 +110,7 @@ export function AddressContent() {
           </div>
           <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt className="text-sm font-medium leading-6 text-gray-900">
-              Zip
+              {lang.zip}
             </dt>
             <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
               {address.zip}
@@ -71,12 +123,8 @@ export function AddressContent() {
   )
 }
 
-export function AddressFormDialog({
-  locale
-}: {
-  locale?: "es" | "en" | string
-}) {
-  const { address } = useLoaderData<typeof loader>();
+function AddressFormDialog() {
+  const { address, locale } = useLoaderData<typeof loader>();
   const [open, setOpen] = useState(false);
   const fetcher = useFetcher<typeof action>();
   const [form, fields] = useForm({

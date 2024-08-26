@@ -2,14 +2,13 @@ import { json, useLoaderData } from "@remix-run/react"
 import type { LoaderFunctionArgs, ActionFunctionArgs } from "@remix-run/node";
 import { FormCard } from "./components/form-card";
 import {
-  CaretakerFormDialog,
-  ContentCaretakers
+  CaretakerCard,
 } from "./components/caretaker";
-import { AddressContent, AddressFormDialog } from "./components/address";
+import { AddressCard } from "./components/address";
 import {
-  ContentMinors,
+  MinorsCard,
 } from "./components/minor";
-import { ContentStudents, FooterStudents } from "./components/students";
+import { StudentsCard } from "./components/students";
 import { Header } from "./components/header";
 import { SubmitCard } from "./components/submit-card";
 import { NumberAdults } from "./components/number-adults";
@@ -115,36 +114,11 @@ export default function ServicePeriodEnrollment() {
   return (
     <>
       <Header />
-      <FormCard
-        title="Primary Caretaker"
-        description="Contact Information"
-        footer={<CaretakerFormDialog />}
-      >
-        <ContentCaretakers />
-      </FormCard>
-      <FormCard
-        title="Address"
-        description="Contact Information"
-        footer={<AddressFormDialog locale={locale} />}
-      >
-        <AddressContent />
-      </FormCard>
-      <NumberAdults />
-      <FormCard
-        title="Students"
-        description="Enter Students"
-        footer={<AddStudentDialog lng={locale} />}
-      >
-        <pre>{JSON.stringify(locale, null, 2)}</pre>
-        <ContentStudents />
-      </FormCard>
-      <FormCard
-        title="Unenrolled Minors"
-        description="Enter those under 18 who are not enrolled in Thomasville City Schools"
-        footer={<AddMinorDialog lng={locale} />}
-      >
-        <ContentMinors />
-      </FormCard>
+      <CaretakerCard />
+      <AddressCard />
+      <NumberAdults locale={locale} />
+      <StudentsCard />
+      <MinorsCard />
       <SubmitCard />
     </>
   )

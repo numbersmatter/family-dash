@@ -1,3 +1,4 @@
+import { useLoaderData } from "@remix-run/react"
 import { EllipsisVerticalIcon } from "lucide-react"
 import { Button } from "~/components/ui/button"
 import {
@@ -7,6 +8,9 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger
 } from "~/components/ui/dropdown-menu"
+import { loader } from "../route"
+import { FormCard } from "./form-card"
+import { AddMinorDialog } from "./add-minor-dialog"
 
 type Minor = {
   name: string
@@ -28,9 +32,33 @@ const minors: Minor[] = [
   },
 ];
 
+export function MinorsCard() {
+  const { locale } = useLoaderData<typeof loader>()
+  const english = {
+    title: "Unenrolled Minors",
+    description: "Enter those under 18 who are not enrolled in Thomasville City Schools",
+  }
+
+  const spanish = {
+    title: "Menores no inscriptos",
+    description: "Ingrese a los menores de 18 años que no están inscriptos en las escuelas de Thomasville",
+  }
+
+  const lang = locale === "es" ? spanish : english
+
+  return (
+    <FormCard
+      title={lang.title}
+      description={lang.description}
+      footer={<AddMinorDialog />}
+    >
+      <ContentMinors />
+    </FormCard>
+  )
+}
 
 
-export function ContentMinors() {
+function ContentMinors() {
   return (
     <ul className="divide-y divide-gray-100">
       {minors.map((minor) => (

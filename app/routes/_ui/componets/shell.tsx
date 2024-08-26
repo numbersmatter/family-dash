@@ -9,7 +9,7 @@ import {
   ShoppingCart,
   Users,
 } from "lucide-react"
-import { Form, Link, NavLink } from "@remix-run/react"
+import { Form, Link, NavLink, useFetcher } from "@remix-run/react"
 import { Badge } from "~/components/ui/badge"
 import { Button } from "~/components/ui/button"
 import {
@@ -87,6 +87,7 @@ export default function UIShell({
   pantry_name: string
 }) {
   const { i18n } = useTranslation();
+  const fetcher = useFetcher();
 
 
   return (
@@ -168,7 +169,7 @@ export default function UIShell({
                 </CardDescription>
               </CardHeader>
               <CardContent className="p-2 pt-0 md:p-4 md:pt-0">
-                <Form >
+                <fetcher.Form >
 
                   <Button
                     type="submit"
@@ -188,7 +189,7 @@ export default function UIShell({
                   >
                     English
                   </Button>
-                </Form>
+                </fetcher.Form>
               </CardContent>
               <CardFooter>
 

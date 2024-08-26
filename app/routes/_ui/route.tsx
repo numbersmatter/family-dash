@@ -4,11 +4,14 @@ import { Button } from "~/components/ui/button";
 import UIShell, { NavId, NavNotification } from "./componets/shell";
 import { Outlet } from "@remix-run/react";
 import { userInfo } from "~/lib/business-logic/signed-in.server";
+import i18nServer from "~/modules/i18n.server";
 
 
 export const loader = async (args: LoaderFunctionArgs) => {
   const { userId } = await userInfo(args);
-  return json({});
+  let locale = await i18nServer.getLocale(args.request);
+
+  return json({ locale });
 };
 
 
