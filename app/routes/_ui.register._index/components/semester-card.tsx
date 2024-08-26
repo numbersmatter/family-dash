@@ -15,9 +15,8 @@ export interface Semester {
   name: string;
   description: string;
   helpText: string;
-  enrollement: boolean;
-  familyStatus: FamilyStatus;
-  reg_id: string;
+  familyStatus?: FamilyStatus;
+  reg_id?: string;
 }
 
 
@@ -26,7 +25,7 @@ export function SemesterCard({ semester }: { semester: Semester }) {
 
 
   return (
-    <Card>
+    <Card className="max-w-md">
       <CardHeader>
         <CardTitle>
           {semester.name}
@@ -37,28 +36,28 @@ export function SemesterCard({ semester }: { semester: Semester }) {
       </CardHeader>
       <CardContent>
         {
-          semester.familyStatus === "open" && (
-            <Form method="post">
-              <input type="hidden" name="semester" value={semester.id} />
-              <Button type="submit" name="type" value="register" size="sm" className="w-full">
-                Register for Semester
-              </Button>
-            </Form>
-          )
-        }
-        {
-          semester.familyStatus !== "open" && (
+          semester.reg_id ? (
             <Link
               to={`/register/${semester.reg_id}`}
               className="text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
             >
               <span className="text-lg font-semibold">
-                {semester.familyStatus === "in-progress" && "Continue"}
-                {semester.familyStatus === "accepted" && "Review"}
-                {semester.familyStatus === "declined" && "Review"}
+                {semester.familyStatus === "in-progress"
+                  ? "Continue Registration"
+                  : "Review"
+                }
               </span>
             </Link>
           )
+            : (
+              <Form method="post">
+                <input type="hidden" name="semester" value={semester.id} />
+                <Button type="submit" name="type" value="register" size="sm" className="">
+                  Register for Semester
+                </Button>
+              </Form>
+
+            )
         }
       </CardContent>
     </Card>

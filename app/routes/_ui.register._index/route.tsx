@@ -1,20 +1,26 @@
 import type { ActionFunctionArgs } from "@remix-run/node";
-import { json, redirect, useLoaderData } from "@remix-run/react"
+import { Form, json, redirect, useLoaderData } from "@remix-run/react"
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { userInfo } from "~/lib/business-logic/signed-in.server";
 import { SemesterGrid } from "./components/semester-grid";
 import { getOpenSemesters } from "./data-fetchers.server";
 import { register } from "./mutations.server";
+import { db } from "~/db/db.server";
+import { semesterDb } from "~/db/semesters/crud.server";
+import { Button } from "~/components/ui/button";
+import { useUser } from "@clerk/remix";
+import { getAuth } from "@clerk/remix/ssr.server";
 
 
 
 
 export const loader = async (args: LoaderFunctionArgs) => {
-  const user = await userInfo(args);
+  const { userId } = await userInfo(args);
 
   const semesters = await getOpenSemesters();
+  const activeSemesters = await semesterDb().getActive();
 
-  return json({ user, semesters });
+  return json({ userId, semesters, activeSemesters });
 };
 
 
@@ -24,6 +30,7 @@ export const action = async (args: ActionFunctionArgs) => {
   const { userId } = await userInfo(args);
   const formData = await args.request.formData();
   const type = formData.get("type");
+
 
   if (type === "register") {
     const semesterId = formData.get("semester") as string;
@@ -44,7 +51,10 @@ export const action = async (args: ActionFunctionArgs) => {
 
 
 export default function RegisterIndexPage() {
-  const { user } = useLoaderData<typeof loader>()
+  const { userId, semesters, activeSemesters } = useLoaderData<typeof loader>()
+
+  const user = useUser();
+
   return (
     <>
       <div className="flex items-center">
@@ -53,6 +63,12 @@ export default function RegisterIndexPage() {
         </h2>
       </div>
       <SemesterGrid />
+      <Form method="post">
+        <Button type="submit" name="type" value="update-semesters">
+          update semesters
+        </Button>
+      </Form>
+      <pre>{JSON.stringify({ userId, user, activeSemesters }, null, 2)}</pre>
     </>
   )
 }

@@ -1,31 +1,27 @@
-import { LoaderFunctionArgs } from "@remix-run/node";
+import { LoaderFunctionArgs, redirect } from "@remix-run/node";
 import { isRegistered } from "./registration.server";
 import i18nServer from "~/modules/i18n.server";
+import { getAuth } from "@clerk/remix/ssr.server";
+import { db } from "~/db/db.server";
 
 export const userInfo = async (args: LoaderFunctionArgs) => {
-  const userId = "1234";
+  const { userId } = await getAuth(args);
+  if (!userId) {
+    throw redirect("/sign-in");
+  }
+
+  const appUserId = userId.split("_", 2)[1];
+
+  const userProfile = await db.appUser.read(appUserId);
+  // if (!userProfile) {
+  //   throw redirect("/on-boarding");
+  // }
+
   const registered = await isRegistered(userId);
 
-  const semestersActive = [
-    {
-      id: "1",
-      name: "Fall 2024 Semester",
-      startDate: "August 1st, 2024",
-      endDate: "December 31st, 2024",
-      status: "applied",
-    },
-    {
-      id: "2",
-      name: "Spring 2025 Semester",
-      startDate: "January 1st, 2025",
-      endDate: "May 31st, 2025",
-      status: "",
-    },
-  ];
-
   return {
-    userId,
+    userId: appUserId,
+    appUserId,
     registered,
-    semestersActive,
   };
 };
