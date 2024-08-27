@@ -21,10 +21,43 @@ interface OpenSemesters {
   reg_id: string;
 }
 
-export const getOpenSemesters = async () => {
+export const getOpenSemesters = async ({
+  appUserId,
+}: {
+  appUserId: string;
+}) => {
   const semesters = await db.semesters.getActive();
+  const semesterIds = semesters.map((semester) => semester.id);
 
-  return semesters;
+  const applicationPromises = semesterIds.map((semesterId) =>
+    db.applications({ semesterId }).read(appUserId)
+  );
+
+  const applications = await Promise.all(applicationPromises);
+
+  const semesters_applications = semesters.map((semester) => {
+    const application = applications.find(
+      (application) => application?.semesterId === semester.id
+    );
+
+    if (!application) {
+      return {
+        ...semester,
+        familyStatus: "open",
+      };
+    }
+
+    return {
+      ...semester,
+      familyStatus: application.status,
+      reg_id: application.id,
+    };
+  });
+
+  return {
+    semesters: semesters_applications,
+    applications,
+  };
   // return [
   //   {
   //     id: "1",

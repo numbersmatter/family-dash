@@ -1,9 +1,12 @@
 import { FieldValue } from "firebase-admin/firestore";
 import { firestore } from "../firestore.server";
-import { Registration, RegistrationDb } from "./registration-types";
+import { Student, Minor } from "../registrations/registration-types";
+import { Application, ApplicationDb } from "./app-types";
 
-export const regDb = () => {
-  const collection = firestore.collection("registrations");
+export const applicationsDb = ({ semesterId }: { semesterId: string }) => {
+  const collection = firestore.collection(
+    `semesters/${semesterId}/applications`
+  );
 
   const read = async (id: string) => {
     const doc = await collection.doc(id).get();
@@ -25,25 +28,35 @@ export const regDb = () => {
       adults: doc.data()?.adults ?? 0,
       students: doc.data()?.students ?? [],
       minors: doc.data()?.minors ?? [],
-    } as Registration;
+    } as Application;
   };
 
-  const create = async (data: RegistrationDb) => {
-    const docRef = collection.doc();
+  const create = async ({
+    appUserId,
+    data,
+  }: {
+    appUserId: string;
+    data: ApplicationDb;
+  }) => {
+    const docRef = collection.doc(appUserId);
 
     const writeData = {
       ...data,
-      status: "in-progress",
       createdDate: FieldValue.serverTimestamp(),
       updatedDate: FieldValue.serverTimestamp(),
     };
 
     await docRef.set(writeData);
-
     return docRef.id;
   };
 
-  const update = async (id: string, data: Partial<RegistrationDb>) => {
+  const update = async ({
+    id,
+    data,
+  }: {
+    id: string;
+    data: Partial<Application>;
+  }) => {
     const docRef = collection.doc(id);
     const updateData = {
       ...data,

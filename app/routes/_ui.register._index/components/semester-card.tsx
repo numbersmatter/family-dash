@@ -1,3 +1,4 @@
+import { useUser } from "@clerk/remix";
 import { Form, Link } from "@remix-run/react";
 import { Button } from "~/components/ui/button";
 import {
@@ -22,7 +23,12 @@ export interface Semester {
 
 
 export function SemesterCard({ semester }: { semester: Semester }) {
+  const { user, } = useUser();
 
+  const fname = user?.firstName ?? "Error";
+  const lname = user?.lastName ?? "Error";
+  const email = user?.emailAddresses[0].emailAddress ?? "Error";
+  const phone = user?.phoneNumbers[0].phoneNumber ?? "Error";
 
   return (
     <Card className="max-w-md">
@@ -51,7 +57,11 @@ export function SemesterCard({ semester }: { semester: Semester }) {
           )
             : (
               <Form method="post">
-                <input type="hidden" name="semester" value={semester.id} />
+                <input type="hidden" name="semesterId" value={semester.id} />
+                <input type="hidden" name="fname" value={fname} />
+                <input type="hidden" name="lname" value={lname} />
+                <input type="hidden" name="email" value={email} />
+                <input type="hidden" name="phone" value={phone} />
                 <Button type="submit" name="type" value="register" size="sm" className="">
                   Register for Semester
                 </Button>
