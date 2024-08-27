@@ -25,6 +25,8 @@ import {
   removeMinor,
   updateMinor
 } from "./mutations/mutate-minor.server";
+import { submit } from "./mutations/submit-mutation.server";
+import { UnderReviewCard } from "./components/under-review-card";
 
 
 export const loader = async (args: LoaderFunctionArgs) => {
@@ -76,26 +78,9 @@ export const action = async (args: ActionFunctionArgs) => {
   //   return updateMinor({ formInput, userId, reg_id });
   // }
 
-
-  // if (type === "adults") {
-  //   // create 4 second delay
-  //   const submission = parseWithZod(formInput, { schema: adultsSchema });
-  //   if (submission.status === "success") {
-  //     const test = { id: "test", name: "test" }
-
-  //     return json({ success: true, data: test, errors: {} });
-  //   }
-  //   return json({ success: false, status: "error", error: submission.error, payload: submission.payload });
-  // }
-
-  // if (type === "address") {
-  //   const submission = parseWithZod(formInput, { schema: addressSchema });
-  //   if (submission.status === "success") {
-  //     const write = await mutateAddress({ address: submission.value, userId });
-  //     return json({ success: true, data: write, errors: {} });
-  //   }
-  //   return json({ success: false, status: "error", error: submission.error, payload: submission.payload });
-  // }
+  if (type === "submit") {
+    return submit({ formInput, appUserId, semesterId });
+  }
 
 
   return json({ ...checkType.reply(), "status": "error", "error": { "type": ["No action provided"] } }, { status: 500 });
@@ -106,6 +91,14 @@ export const action = async (args: ActionFunctionArgs) => {
 
 
 export default function ServicePeriodEnrollment() {
+  const { status } = useLoaderData<typeof loader>();
+
+  const isSubmitted = status === "pending";
+
+  if (isSubmitted) {
+    return <UnderReviewCard />
+  }
+
 
   return (
     <>

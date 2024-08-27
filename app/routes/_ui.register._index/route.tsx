@@ -53,7 +53,7 @@ export default function RegisterIndexPage() {
         </h2>
       </div>
       <SemesterGrid />
-      <pre>{JSON.stringify({ semesters, applications }, null, 2)}</pre>
+
     </>
   )
 }

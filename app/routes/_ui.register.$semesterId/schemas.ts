@@ -11,6 +11,7 @@ export const actionTypesSchema = z.object({
       "addMinor",
       "removeMinor",
       "updateMinor",
+      "submit",
     ],
     {
       errorMap(issue, ctx) {
@@ -34,10 +35,29 @@ export const actionTypesSchema = z.object({
   ),
 });
 
+export const primaryContactSchema = z.object({
+  fname: z
+    .string({ required_error: "First Name is required" })
+    .min(1, { message: "First name must be at least 1 character" }),
+  lname: z
+    .string({ required_error: "Last Name is required" })
+    .min(1, { message: "Last name must be at least 1 character" }),
+  email: z
+    .string({ required_error: "Email is required" })
+    .min(3, { message: "Email must be at least 1 character" }),
+  phone: z
+    .string({ required_error: "Phone is required" })
+    .min(10, { message: "Phone must be at least 10 characters" }),
+});
+
 export const addressSchema = z.object({
-  street: z.string({ required_error: "Street is required" }),
+  street: z
+    .string({ required_error: "Street is required" })
+    .min(1, { message: "Street must be at least 1 character" }),
   unit: z.string().default(" "),
-  city: z.string({ required_error: "City is required" }),
+  city: z
+    .string({ required_error: "City is required" })
+    .min(1, { message: "City must be at least 1 character" }),
   state: z.literal("NC", { invalid_type_error: "Must be NC" }),
   zip: z
     .string({ required_error: "Zip is required" })
@@ -125,3 +145,5 @@ export const UpdateAdultsSchema = z.object({
     .number({ required_error: "Adults is required" })
     .min(1, { message: "Adults must be greater than 0" }),
 });
+
+export const submitSchema = z.object({});

@@ -43,5 +43,7 @@ export const getRegisterData = async ({
     };
   });
 
-  return { address, usage, adults, students, minors };
+  const status = application.status;
+
+  return { address, usage, adults, students, minors, status };
 };
