@@ -12,6 +12,7 @@ import { loader } from "../route"
 import { loader as rootloader } from "~/root"
 import { FormCard } from "./form-card"
 import { AddStudentDialog } from "./add-student-dialog"
+import { use } from "i18next"
 
 
 type Student = {
@@ -70,6 +71,9 @@ export function StudentsCard() {
 
 function ContentStudents() {
   const rootData = useRouteLoaderData<typeof rootloader>("root");
+  const { students } = useLoaderData<typeof loader>()
+
+
 
 
   const english = {

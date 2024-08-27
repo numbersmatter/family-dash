@@ -59,6 +59,7 @@ export function MinorsCard() {
 
 
 function ContentMinors() {
+  const { minors } = useLoaderData<typeof loader>()
   return (
     <ul className="divide-y divide-gray-100">
       {minors.map((minor) => (
@@ -75,26 +76,13 @@ function ContentMinors() {
               </p>
               <p className="mt-1 flex text-xs leading-5 text-gray-500">
                 <a href={`mailto:${minor.family_role}`} className="truncate hover:underline">
-                  {minor.school}
+                  {minor.birthyear}
                 </a>
               </p>
             </div>
           </div>
           <div className="flex shrink-0 items-center gap-x-6">
             <div className="hidden sm:flex sm:flex-col sm:items-end">
-              <p className="text-sm leading-6 text-gray-900">{minor.role}</p>
-              {minor.school ? (
-                <p className="mt-1 text-xs leading-5 text-gray-500">
-                  School: {minor.school}
-                </p>
-              ) : (
-                <div className="mt-1 flex items-center gap-x-1.5">
-                  <div className="flex-none rounded-full bg-emerald-500/20 p-1">
-                    <div className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                  </div>
-                  <p className="text-xs leading-5 text-gray-500">Online</p>
-                </div>
-              )}
             </div>
             <DropdownMenu  >
               <DropdownMenuTrigger className="-m-2.5 block p-2.5 text-gray-500 hover:text-gray-900">
