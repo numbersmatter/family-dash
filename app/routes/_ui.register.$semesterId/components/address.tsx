@@ -202,7 +202,7 @@ function AddressFormDialog() {
             {lang.description}
           </DialogDescription>
         </DialogHeader>
-        <fetcher.Form method="post" {...getFormProps(form)}>
+        <fetcher.Form method="post" {...getFormProps(form)} >
 
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
@@ -252,6 +252,18 @@ function AddressFormDialog() {
               />
               <div className="text-red-500 col-start-2 col-span-3">
                 {fields.state.errors}
+              </div>
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor={fields.zip.id} className="text-right">
+                {lang.zip}
+              </Label>
+              <Input
+                className="col-span-3"
+                {...getInputProps(fields.zip, { type: "text" })}
+              />
+              <div className="text-red-500 col-start-2 col-span-3">
+                {fields.zip.errors}
               </div>
             </div>
           </div>

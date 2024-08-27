@@ -5,41 +5,47 @@ import {
   UpdateMinorSchema,
 } from "../schemas";
 import { json } from "@remix-run/node";
+import { db } from "~/db/db.server";
 
 interface Minor {
   fname: string;
   lname: string;
-  birthyear: string;
+  birthyear: number;
 }
 
 const addMinorMutation = async ({
   minor,
-  userId,
-  reg_id,
+  appUserId,
+  semesterId,
 }: {
   minor: Minor;
-  userId: string;
-  reg_id: string;
+  appUserId: string;
+  semesterId: string;
 }) => {
-  const id = "234";
-  return id;
+  // make random id
+  const minorId = Math.floor(Math.random() * 10000).toLocaleString();
+  const write = await db.applications({ semesterId }).addMinor({
+    appUserId,
+    data: { ...minor, id: minorId },
+  });
+  return write;
 };
 
 export const addMinor = async ({
   formInput,
-  userId,
-  reg_id,
+  appUserId,
+  semesterId,
 }: {
   formInput: FormData;
-  userId: string;
-  reg_id: string;
+  appUserId: string;
+  semesterId: string;
 }) => {
   const submission = parseWithZod(formInput, { schema: AddMinorSchema });
   if (submission.status === "success") {
     const write = await addMinorMutation({
       minor: submission.value,
-      userId,
-      reg_id,
+      appUserId,
+      semesterId,
     });
     return json(submission.reply());
   }
@@ -47,33 +53,36 @@ export const addMinor = async ({
 };
 
 const removeMinorMutation = async ({
-  userId,
   minorId,
-  reg_id,
+  appUserId,
+  semesterId,
 }: {
-  userId: string;
   minorId: string;
-  reg_id: string;
+  appUserId: string;
+  semesterId: string;
 }) => {
-  const id = minorId;
-  return id;
+  const write = await db.applications({ semesterId }).removeMinor({
+    appUserId,
+    minorId,
+  });
+  return write;
 };
 
 export const removeMinor = async ({
   formInput,
-  userId,
-  reg_id,
+  appUserId,
+  semesterId,
 }: {
   formInput: FormData;
-  userId: string;
-  reg_id: string;
+  appUserId: string;
+  semesterId: string;
 }) => {
   const submission = parseWithZod(formInput, { schema: RemoveMinorSchema });
   if (submission.status === "success") {
     const write = await removeMinorMutation({
       minorId: submission.value.minorId,
-      userId,
-      reg_id,
+      appUserId,
+      semesterId,
     });
     return json(submission.reply());
   }

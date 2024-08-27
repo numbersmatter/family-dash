@@ -11,6 +11,13 @@ interface Application {
     email: string;
     phone: string;
   };
+  address: {
+    street: string;
+    unit: string;
+    city: string;
+    state: string;
+    zip: string;
+  };
   adults: number;
   students: Student[];
   minors: Minor[];

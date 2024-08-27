@@ -1,6 +1,7 @@
 import { parseWithZod } from "@conform-to/zod";
 import { json } from "@remix-run/node";
 import { addressSchema } from "../schemas";
+import { db } from "~/db/db.server";
 
 interface MutateAddress {
   street: string;
@@ -12,31 +13,43 @@ interface MutateAddress {
 
 const mutateAddress = async ({
   address,
-  userId,
-  reg_id,
+  appUserId,
+  semesterId,
 }: {
   address: MutateAddress;
-  userId: string;
-  reg_id: string;
+  appUserId: string;
+  semesterId: string;
 }) => {
-  return { success: true, address, userId };
+  const write = await db.applications({ semesterId }).update({
+    id: appUserId,
+    data: {
+      address: {
+        street: address.street,
+        unit: address.unit,
+        city: address.city,
+        state: address.state,
+        zip: address.zip,
+      },
+    },
+  });
+  return write;
 };
 
 export const updateAddress = async ({
   formInput,
-  userId,
-  reg_id,
+  appUserId,
+  semesterId,
 }: {
   formInput: FormData;
-  userId: string;
-  reg_id: string;
+  appUserId: string;
+  semesterId: string;
 }) => {
   const submission = parseWithZod(formInput, { schema: addressSchema });
   if (submission.status === "success") {
     const write = await mutateAddress({
       address: submission.value,
-      userId,
-      reg_id,
+      appUserId,
+      semesterId,
     });
     return json(submission.reply());
   }

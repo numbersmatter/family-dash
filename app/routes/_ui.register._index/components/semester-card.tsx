@@ -44,7 +44,7 @@ export function SemesterCard({ semester }: { semester: Semester }) {
         {
           semester.reg_id ? (
             <Link
-              to={`/register/${semester.reg_id}`}
+              to={`/register/${semester.id}`}
               className="text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
             >
               <span className="text-lg font-semibold">

@@ -30,7 +30,7 @@ export const register = async ({
         minors: [],
       },
     });
-    return redirect(`/register/${applicationId}`);
+    return redirect(`/register/${semesterId}`);
   }
   return json(submission.reply());
 };

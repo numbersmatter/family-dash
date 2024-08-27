@@ -1,39 +1,49 @@
 import { parseWithZod } from "@conform-to/zod";
 import { AddStudentSchema, RemoveStudentSchema } from "../schemas";
 import { json } from "@remix-run/node";
+import { db } from "~/db/db.server";
 
 interface Student {
   fname: string;
   lname: string;
-  school: string;
+  school: "tps" | "lde" | "tms" | "ths";
 }
 
 const addStudentMutation = async ({
   students,
-  userId,
+  appUserId,
+  semesterId,
 }: {
   students: Student;
-  userId: string;
+  appUserId: string;
+  semesterId: string;
 }) => {
-  const { fname, lname, school } = students;
-  const id = "234";
-  return id;
+  // make random id
+  const studentId = Math.floor(Math.random() * 10000).toLocaleString();
+
+  const write = await db.applications({ semesterId }).addStudent({
+    appUserId,
+    data: { ...students, id: studentId },
+  });
+
+  return write;
 };
 
 export const addStudent = async ({
   formInput,
-  userId,
-  reg_id,
+  appUserId,
+  semesterId,
 }: {
   formInput: FormData;
-  userId: string;
-  reg_id: string;
+  appUserId: string;
+  semesterId: string;
 }) => {
   const submission = parseWithZod(formInput, { schema: AddStudentSchema });
   if (submission.status === "success") {
     const write = await addStudentMutation({
       students: submission.value,
-      userId,
+      appUserId,
+      semesterId,
     });
     return json(submission.reply());
   }
@@ -41,26 +51,29 @@ export const addStudent = async ({
 };
 
 const removeStudentMutation = async ({
-  userId,
+  appUserId,
   studentId,
-  reg_id,
+  semesterId,
 }: {
-  userId: string;
   studentId: string;
-  reg_id: string;
+  appUserId: string;
+  semesterId: string;
 }) => {
-  const id = studentId;
-  return id;
+  const write = await db.applications({ semesterId }).removeStudent({
+    appUserId,
+    studentId,
+  });
+  return write;
 };
 
 export const removeStudent = async ({
   formInput,
-  userId,
-  reg_id,
+  appUserId,
+  semesterId,
 }: {
   formInput: FormData;
-  userId: string;
-  reg_id: string;
+  appUserId: string;
+  semesterId: string;
 }) => {
   const submission = parseWithZod(formInput, { schema: RemoveStudentSchema });
   if (submission.status !== "success") {
@@ -69,8 +82,8 @@ export const removeStudent = async ({
 
   const write = await removeStudentMutation({
     studentId: submission.value.studentId,
-    userId,
-    reg_id,
+    semesterId,
+    appUserId,
   });
   return json(submission.reply());
 };

@@ -1,7 +1,7 @@
 import { parseWithZod } from "@conform-to/zod";
 import { json } from "@remix-run/node";
 import { UpdateAdultsSchema } from "../schemas";
-import { s } from "node_modules/vite/dist/node/types.d-aGj9QkWt";
+import { db } from "~/db/db.server";
 
 interface MutateAdults {
   adults: number;
@@ -9,31 +9,36 @@ interface MutateAdults {
 
 const mutateAdults = async ({
   adults,
-  userId,
-  reg_id,
+  appUserId,
+  semesterId,
 }: {
-  adults: MutateAdults;
-  userId: string;
-  reg_id: string;
+  adults: number;
+  appUserId: string;
+  semesterId: string;
 }) => {
-  return { success: true, adults, userId };
+  return await db.applications({ semesterId }).update({
+    id: appUserId,
+    data: {
+      adults: adults,
+    },
+  });
 };
 
 export const updateAdults = async ({
   formInput,
-  userId,
-  reg_id,
+  appUserId,
+  semesterId,
 }: {
   formInput: FormData;
-  userId: string;
-  reg_id: string;
+  appUserId: string;
+  semesterId: string;
 }) => {
   const submission = parseWithZod(formInput, { schema: UpdateAdultsSchema });
   if (submission.status === "success") {
     const write = await mutateAdults({
-      adults: submission.value,
-      userId,
-      reg_id,
+      adults: submission.value.adults,
+      appUserId,
+      semesterId,
     });
     return json(submission.reply());
   }

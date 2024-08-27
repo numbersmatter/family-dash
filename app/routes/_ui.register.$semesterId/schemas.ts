@@ -106,7 +106,7 @@ export const EditStudentSchema = z.object({
 export const AddMinorSchema = z.object({
   fname: z.string({ required_error: "First Name is required" }),
   lname: z.string({ required_error: "Last Name is required" }),
-  birthyear: z.string({ required_error: "Birth Year is required" }),
+  birthyear: z.number({ required_error: "Birth Year is required" }),
 });
 
 export const RemoveMinorSchema = z.object({
@@ -117,7 +117,7 @@ export const UpdateMinorSchema = z.object({
   minorId: z.string({ required_error: "Minor ID is required" }),
   fname: z.string({ required_error: "First Name is required" }),
   lname: z.string({ required_error: "Last Name is required" }),
-  birthyear: z.string({ required_error: "Birth Year is required" }),
+  birthyear: z.number({ required_error: "Birth Year is required" }),
 });
 
 export const UpdateAdultsSchema = z.object({

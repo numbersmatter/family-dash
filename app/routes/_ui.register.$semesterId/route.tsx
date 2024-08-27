@@ -13,9 +13,7 @@ import { Header } from "./components/header";
 import { SubmitCard } from "./components/submit-card";
 import { NumberAdults } from "./components/number-adults";
 import { userInfo } from "~/lib/business-logic/signed-in.server";
-import { AddStudentDialog } from "./components/add-student-dialog";
 import i18nServer from "~/modules/i18n.server";
-import { AddMinorDialog } from "./components/add-minor-dialog";
 import { parseWithZod } from "@conform-to/zod";
 import { actionTypesSchema } from "./schemas";
 import { addStudent, removeStudent } from "./mutations/mutate-students.server";
@@ -27,25 +25,13 @@ import {
   removeMinor,
   updateMinor
 } from "./mutations/mutate-minor.server";
-import { loader as rootloader } from "~/root"
-import { getAuth } from "@clerk/remix/ssr.server";
-import { useUser } from "@clerk/remix";
 
 
 export const loader = async (args: LoaderFunctionArgs) => {
-  const reg_id = args.params.reg_id ?? "no-id";
-  const { userId } = await getAuth(args);
-  if (!userId) {
-    return redirect("/sign-in")
-  }
-
-
-
+  const semesterId = args.params.semesterId ?? "no-id";
+  const { appUserId } = await userInfo(args);
   let locale = await i18nServer.getLocale(args.request);
-  const t = await i18nServer.getFixedT(args.request);
-
-
-  const data = await getRegisterData({ reg_id, userId });
+  const data = await getRegisterData({ semesterId, appUserId });
 
   return json({ ...data, locale });
 };
@@ -54,8 +40,8 @@ export const loader = async (args: LoaderFunctionArgs) => {
 
 export const action = async (args: ActionFunctionArgs) => {
   const formInput = await args.request.formData();
-  const { userId } = await userInfo(args);
-  const reg_id = args.params.reg_id ?? "no-id";
+  const { appUserId } = await userInfo(args);
+  const semesterId = args.params.semesterId ?? "no-id";
 
   const type = formInput.get("type");
 
@@ -66,29 +52,29 @@ export const action = async (args: ActionFunctionArgs) => {
   }
 
   if (type === "addStudent") {
-    return addStudent({ formInput, userId, reg_id });
+    return addStudent({ formInput, appUserId, semesterId });
   }
   if (type === "removeStudent") {
-    return removeStudent({ formInput, userId, reg_id });
+    return removeStudent({ formInput, appUserId, semesterId });
   }
-  if (type === "editStudent") {
-    return removeStudent({ formInput, userId, reg_id });
-  }
+  // if (type === "editStudent") {
+  //   return removeStudent({ formInput, userId, reg_id });
+  // }
   if (type === "updateAddress") {
-    return updateAddress({ formInput, userId, reg_id });
+    return updateAddress({ formInput, appUserId, semesterId });
   }
   if (type === "updateAdults") {
-    return updateAdults({ formInput, userId, reg_id });
+    return updateAdults({ formInput, appUserId, semesterId });
   }
   if (type === "addMinor") {
-    return addMinor({ formInput, userId, reg_id });
+    return addMinor({ formInput, appUserId, semesterId });
   }
   if (type === "removeMinor") {
-    return removeMinor({ formInput, userId, reg_id });
+    return removeMinor({ formInput, appUserId, semesterId });
   }
-  if (type === "updateMinor") {
-    return updateMinor({ formInput, userId, reg_id });
-  }
+  // if (type === "updateMinor") {
+  //   return updateMinor({ formInput, userId, reg_id });
+  // }
 
 
   // if (type === "adults") {
