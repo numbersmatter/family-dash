@@ -92,11 +92,11 @@ export default function UIShell({
 
 
   return (
-    <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
+    <div className="grid grid-cols-1 h-screen lg:grid-cols-12   ">
       {/* Desktop sidebar */}
-      <div className="hidden border-r bg-muted/40 md:block">
-        <div className="flex h-full max-h-screen flex-col gap-2">
-          <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
+      <div className=" hidden border-r-2 h-full lg:block lg:col-span-3 lg:flex-col xl:col-span-2  ">
+        <div className="flex h-full max-h-screen min-w-full flex-col gap-2">
+          <div className="flex h-14 items-center border-b px-4  lg:px-6">
             <Link to="/" className="flex items-center gap-2 font-semibold">
               <Package2 className="h-6 w-6" />
               <span className="">{pantry_name}</span>
@@ -205,15 +205,15 @@ export default function UIShell({
         </div>
       </div>
 
-      <div className="flex flex-col">
-        <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
+      <div className="col-span-full overflow-hidden  h-full flex flex-col lg:col-span-9  xl:col-span-10">
+        <header className="flex flex-row h-14 items-center gap-4 border-b bg-muted/40 px-4  lg:px-6">
           {/* Mobile sidebar */}
           <Sheet>
             <SheetTrigger asChild>
               <Button
                 variant="outline"
                 size="icon"
-                className="shrink-0 md:hidden"
+                className="shrink-0 lg:hidden"
               >
                 <Menu className="h-5 w-5" />
                 <span className="sr-only">Toggle navigation menu</span>
@@ -265,7 +265,7 @@ export default function UIShell({
             <UserButton />
           </SignedIn>
         </header>
-        <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
+        <main className="flex flex-1 flex-col overflow-auto">
           {children}
         </main>
       </div>

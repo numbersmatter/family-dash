@@ -28,24 +28,26 @@ export type Enrollment = {
 
 
 export const loader = async (args: LoaderFunctionArgs) => {
-  const { userId } = await getAuth(args);
-  if (!userId) {
-    return redirect("/sign-in")
-  }
-  const { registered } = await userInfo(args);
 
-  const pageData = await getDashboardData(args);
+  const { appUserId } = await userInfo(args);
+  const t = await i18nServer.getFixedT(args.request);
+  const meta = {
+    title: t("welcome"),
+    description: t("welcomeDescription"),
+  };
+
+  const pageData = await getDashboardData({ appUserId });
   let locale = await i18nServer.getLocale(args.request);
 
 
 
-  return json({ ...pageData });
+  return json({ ...pageData, meta });
 };
 
 
 
 export default function Dashboard() {
-  const { openSemesters, registeredSemesters } = useLoaderData<typeof loader>()
+  // const { } = useLoaderData<typeof loader>()
   const { t } = useTranslation();
 
 

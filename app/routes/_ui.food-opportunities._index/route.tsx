@@ -1,8 +1,9 @@
 import { json, useLoaderData } from "@remix-run/react"
-import type { LoaderFunctionArgs } from "@remix-run/node";
+import type { LoaderFunctionArgs, ActionFunctionArgs } from "@remix-run/node";
 import OpenOpportunities from "./components/open-opportunities";
 import { userInfo } from "~/lib/business-logic/signed-in.server";
-
+import { getOpportunities } from "./data-fetchers.server";
+import { handleRequest } from "./mutations.server";
 
 interface FoodOpportunity {
   id: string;
@@ -17,37 +18,32 @@ interface FoodOpportunity {
 
 
 export const loader = async (args: LoaderFunctionArgs) => {
-  const { userId } = await userInfo(args);
-  const opportunities: FoodOpportunity[] = [
-    {
-      id: "1",
-      name: "Food Pickup - Sept 4th",
-      status: "Confirmed",
-      code: "H5GVB",
-      totalSales: 25,
-      date: "Sept. 4, 2024",
-      applied: true
-    },
-    {
-      id: "2",
-      name: "Drive-Thru - Sept 18",
-      status: "Open",
-      code: "DF6R",
-      totalSales: 100,
-      date: "September 18, 2024",
-      applied: false
+  const { appUserId } = await userInfo(args);
+  const data = await getOpportunities({ appUserId });
 
-    },
-  ]
-  return json({ opportunities });
+  return json({ ...data, locale: "en" });
 };
 
 
-export default function OpportunitiesPage() {
+export const action = async (args: ActionFunctionArgs) => {
+  const { appUserId } = await userInfo(args);
+  const formInput = await args.request.formData();
+  const options: { id: string }[] = [];
 
+
+  return await handleRequest({ appUserId, formInput });
+};
+
+
+
+
+
+export default function OpportunitiesPage() {
+  const data = useLoaderData<typeof loader>()
   return (
     <>
       <OpenOpportunities />
+
     </>
   )
 }

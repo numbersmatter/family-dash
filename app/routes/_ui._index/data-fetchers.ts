@@ -1,4 +1,5 @@
 import { LoaderFunctionArgs } from "@remix-run/node";
+import { db } from "~/db/db.server";
 import i18nServer from "~/modules/i18n.server";
 
 interface FoodOpportunity {
@@ -17,12 +18,25 @@ interface Semester {
   code: string;
 }
 
-export const getDashboardData = async (args: LoaderFunctionArgs) => {
-  const t = await i18nServer.getFixedT(args.request);
-  const meta = {
-    title: t("welcome"),
-    description: t("welcomeDescription"),
-  };
+export const getDashboardData = async ({
+  appUserId,
+}: {
+  appUserId: string;
+}) => {
+  const activeSemesters = await db.semesters.getActive();
+  const semesterId = activeSemesters.length > 0 ? activeSemesters[0].id : "1";
+
+  const userSemesterDoc = await db
+    .userSemesters({ appUserId })
+    .read({ semesterId });
+
+  if (!userSemesterDoc) {
+    const opportunities: FoodOpportunity[] = [];
+    return {
+      opportunities,
+    };
+  }
+
   const openSemesters = [
     {
       id: "1",
@@ -66,6 +80,5 @@ export const getDashboardData = async (args: LoaderFunctionArgs) => {
     openSemesters,
     opportunities,
     registeredSemesters,
-    meta,
   };
 };
