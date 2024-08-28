@@ -2,6 +2,7 @@ import { json, useLoaderData } from "@remix-run/react"
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { ProgramCard } from "./components/program-card";
 import { ProgramGrid } from "./components/program-grid";
+import { RedirectToSignIn, SignedOut } from "@clerk/remix";
 
 
 
@@ -28,6 +29,9 @@ export default function UIEnrollmentRoute() {
         </h2>
       </div>
       <ProgramGrid />
+      <SignedOut>
+        <RedirectToSignIn />
+      </SignedOut>
     </>
   )
 }

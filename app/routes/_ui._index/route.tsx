@@ -7,6 +7,7 @@ import { getDashboardData } from "./data-fetchers";
 import { userInfo } from "~/lib/business-logic/signed-in.server";
 import i18nServer from "~/modules/i18n.server";
 import { getAuth } from "@clerk/remix/ssr.server";
+import { RedirectToSignIn, SignedOut } from "@clerk/remix";
 
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
@@ -28,8 +29,16 @@ export type Enrollment = {
 
 
 export const loader = async (args: LoaderFunctionArgs) => {
+  const { userId } = await getAuth(args);
+  if (!userId) {
+    throw redirect("/sign-in");
+  }
 
-  const { appUserId } = await userInfo(args);
+  const appUserStart = userId ?? "user_12345";
+
+  const appUserId = appUserStart.split("_", 2)[1];
+
+  // const { appUserId } = await userInfo(args);
   const t = await i18nServer.getFixedT(args.request);
   const meta = {
     title: t("welcome"),
@@ -79,6 +88,9 @@ export default function Dashboard() {
 
         </div>
       </div>
+      <SignedOut>
+        <RedirectToSignIn />
+      </SignedOut>
     </>
   )
 }

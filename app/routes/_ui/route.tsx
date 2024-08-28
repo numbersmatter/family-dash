@@ -8,7 +8,6 @@ import i18nServer from "~/modules/i18n.server";
 
 
 export const loader = async (args: LoaderFunctionArgs) => {
-  const { userId } = await userInfo(args);
   const t = await i18nServer.getFixedT(args.request);
 
   return json({});

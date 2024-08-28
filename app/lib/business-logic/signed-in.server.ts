@@ -6,22 +6,21 @@ import { db } from "~/db/db.server";
 
 export const userInfo = async (args: LoaderFunctionArgs) => {
   const { userId } = await getAuth(args);
-  if (!userId) {
-    throw redirect("/sign-in");
-  }
+  // if (!userId) {
+  //   throw redirect("/sign-in");
+  // }
 
-  const appUserId = userId.split("_", 2)[1];
+  const userPlaceholder = userId ?? "user_12345";
+
+  const appUserId = userPlaceholder.split("_", 2)[1];
 
   const userProfile = await db.appUser.read(appUserId);
   // if (!userProfile) {
   //   throw redirect("/on-boarding");
   // }
 
-  const registered = await isRegistered(userId);
-
   return {
     userId: appUserId,
     appUserId,
-    registered,
   };
 };
