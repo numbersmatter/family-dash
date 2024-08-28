@@ -1,3 +1,4 @@
+import { isRouteErrorResponse, useRouteError } from "@remix-run/react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import {
   json, useLoaderData, useRouteLoaderData,
@@ -86,6 +87,24 @@ function App() {
   useChangeLanguage(locale);
   return <Outlet />;
 }
+
+
+export function ErrorBoundary() {
+  const error = useRouteError();
+  if (isRouteErrorResponse(error)) {
+    return <div>
+      <h1>Oops!</h1>
+      <p>
+        {error.status} {error.data}
+      </p>
+    </div>
+  }
+  return <div>
+    <h1>Something went wrong</h1>
+    <pre>{JSON.stringify(error, null, 2)}</pre>
+  </div>
+}
+
 
 export default ClerkApp(App);
 

@@ -1,4 +1,4 @@
-import { json, redirect, useLoaderData } from "@remix-run/react"
+import { isRouteErrorResponse, json, redirect, useLoaderData, useRouteError } from "@remix-run/react"
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { SignUp } from "@clerk/remix";
 import { getAuth } from "@clerk/remix/ssr.server";
@@ -27,4 +27,20 @@ export default function SignUpPage() {
       </div>
     </div>
   )
+}
+
+export function ErrorBoundary() {
+  const error = useRouteError();
+  if (isRouteErrorResponse(error)) {
+    return <div>
+      <h1>Oops Signup error!</h1>
+      <p>
+        {error.status} {error.data}
+      </p>
+    </div>
+  }
+  return <div>
+    <h1>Something went wrong</h1>
+    <pre>{JSON.stringify(error, null, 2)}</pre>
+  </div>
 }
