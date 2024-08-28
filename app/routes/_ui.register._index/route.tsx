@@ -1,15 +1,19 @@
-import { json, useLoaderData } from "@remix-run/react"
+import { json, redirect, useLoaderData } from "@remix-run/react"
 import type { LoaderFunctionArgs, ActionFunctionArgs } from "@remix-run/node";
-import { userInfo } from "~/lib/business-logic/signed-in.server";
 import { SemesterGrid } from "./components/semester-grid";
 import { getOpenSemesters } from "./data-fetchers.server";
 import { register } from "./mutations.server";
+import { getAuth } from "@clerk/remix/ssr.server";
 
 
 
 
 export const loader = async (args: LoaderFunctionArgs) => {
-  const { userId, appUserId } = await userInfo(args);
+  const { userId } = await getAuth(args);
+  if (!userId) {
+    throw redirect("/sign-in");
+  }
+  const appUserId = userId.split("_", 2)[1];
 
   const { semesters, applications } = await getOpenSemesters({ appUserId });
 
@@ -20,7 +24,11 @@ export const loader = async (args: LoaderFunctionArgs) => {
 
 
 export const action = async (args: ActionFunctionArgs) => {
-  const { appUserId } = await userInfo(args);
+  const { userId } = await getAuth(args);
+  if (!userId) {
+    throw redirect("/sign-in");
+  }
+  const appUserId = userId.split("_", 2)[1];
   const formInput = await args.request.formData();
   const type = formInput.get("type");
 

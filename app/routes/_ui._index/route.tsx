@@ -4,7 +4,6 @@ import type { MetaFunction } from "@remix-run/node";
 import OpenOpportunities from "./components/opportunities-table";
 import { useTranslation } from "react-i18next";
 import { getDashboardData } from "./data-fetchers";
-import { userInfo } from "~/lib/business-logic/signed-in.server";
 import i18nServer from "~/modules/i18n.server";
 import { getAuth } from "@clerk/remix/ssr.server";
 import { RedirectToSignIn, SignedOut } from "@clerk/remix";
@@ -38,7 +37,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
 
   const appUserId = appUserStart.split("_", 2)[1];
 
-  // const { appUserId } = await userInfo(args);
+
   const t = await i18nServer.getFixedT(args.request);
   const meta = {
     title: t("welcome"),

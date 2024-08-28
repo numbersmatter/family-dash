@@ -13,7 +13,6 @@ import { Toaster } from "./components/ui/sonner";
 import i18nServer, { localeCookie } from "./modules/i18n.server";
 import { useTranslation, } from "react-i18next";
 import { useChangeLanguage } from "remix-i18next/react";
-import { userInfo } from "./lib/business-logic/signed-in.server";
 import { rootAuthLoader } from "@clerk/remix/ssr.server";
 import { ClerkApp } from "@clerk/remix";
 

@@ -3,7 +3,6 @@ import { Form, json, redirect, useLoaderData } from "@remix-run/react"
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { getAuth } from "@clerk/remix/ssr.server";
 import { db } from "~/db/db.server";
-import { userInfo } from "~/lib/business-logic/signed-in.server";
 import { z } from "zod";
 import { parseWithZod } from "@conform-to/zod";
 import { useUser } from "@clerk/remix";
@@ -36,7 +35,11 @@ export const loader = async (args: LoaderFunctionArgs) => {
 
 
 export const action = async (args: ActionFunctionArgs) => {
-  const { appUserId } = await userInfo(args);
+  const { userId } = await getAuth(args);
+  if (!userId) {
+    return redirect("/sign-in");
+  }
+  const appUserId = userId.split("_", 2)[1];
   const formInput = await args.request.formData();
   const type = formInput.get("type");
 

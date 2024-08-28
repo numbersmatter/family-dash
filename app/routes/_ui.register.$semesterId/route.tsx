@@ -12,7 +12,6 @@ import { StudentsCard } from "./components/students";
 import { Header } from "./components/header";
 import { SubmitCard } from "./components/submit-card";
 import { NumberAdults } from "./components/number-adults";
-import { userInfo } from "~/lib/business-logic/signed-in.server";
 import i18nServer from "~/modules/i18n.server";
 import { parseWithZod } from "@conform-to/zod";
 import { actionTypesSchema } from "./schemas";
@@ -27,11 +26,17 @@ import {
 } from "./mutations/mutate-minor.server";
 import { submit } from "./mutations/submit-mutation.server";
 import { UnderReviewCard } from "./components/under-review-card";
+import { getAuth } from "@clerk/remix/ssr.server";
 
 
 export const loader = async (args: LoaderFunctionArgs) => {
   const semesterId = args.params.semesterId ?? "no-id";
-  const { appUserId } = await userInfo(args);
+  const { userId } = await getAuth(args);
+  if (!userId) {
+    throw redirect("/sign-in");
+  }
+
+  const appUserId = userId.split("_", 2)[1];
   let locale = await i18nServer.getLocale(args.request);
   const data = await getRegisterData({ semesterId, appUserId });
 
@@ -42,7 +47,11 @@ export const loader = async (args: LoaderFunctionArgs) => {
 
 export const action = async (args: ActionFunctionArgs) => {
   const formInput = await args.request.formData();
-  const { appUserId } = await userInfo(args);
+  const { userId } = await getAuth(args);
+  if (!userId) {
+    throw redirect("/sign-in");
+  }
+  const appUserId = userId.split("_", 2)[1];
   const semesterId = args.params.semesterId ?? "no-id";
 
   const type = formInput.get("type");

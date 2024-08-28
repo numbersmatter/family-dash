@@ -3,7 +3,6 @@ import type { LoaderFunctionArgs } from "@remix-run/node";
 import { Button } from "~/components/ui/button";
 import UIShell, { NavId, NavNotification } from "./componets/shell";
 import { Outlet } from "@remix-run/react";
-import { userInfo } from "~/lib/business-logic/signed-in.server";
 import i18nServer from "~/modules/i18n.server";
 
 
