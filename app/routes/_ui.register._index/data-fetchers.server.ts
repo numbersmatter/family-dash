@@ -6,6 +6,15 @@ interface SemesterEnglish {
   description: string;
   helpText: string;
 }
+type FamilyStatus = "open" | "in-progress" | "accepted" | "declined";
+export interface SemesterCard {
+  id: string;
+  name: string;
+  description: string;
+  helpText: string;
+  familyStatus?: FamilyStatus;
+  reg_id?: string;
+}
 interface SemesterSpanish {
   name: string;
   description: string;
@@ -28,6 +37,15 @@ export const getOpenSemesters = async ({
 }) => {
   const semesters = await db.semesters.getActive();
   const semesterIds = semesters.map((semester) => semester.id);
+  const userDoc = await db.appUser.read(appUserId);
+
+  const defaultDocData = {
+    language: "en",
+  };
+
+  const userDocData = userDoc ?? defaultDocData;
+
+  const language = userDocData.language === "es" ? "es" : "en";
 
   const applicationPromises = semesterIds.map((semesterId) =>
     db.applications({ semesterId }).read(appUserId)
@@ -46,11 +64,24 @@ export const getOpenSemesters = async ({
         familyStatus: "open",
       };
     }
+    const lang = language === "es" ? semester.spanish : semester.english;
+
+    const testSemester = {
+      ...semester,
+      name: lang.name,
+      description: lang.description,
+      helpText: lang.helpText,
+      familyStatus: application.status,
+      reg_id: application.id,
+    } as SemesterCard;
 
     return {
       ...semester,
       familyStatus: application.status,
       reg_id: application.id,
+      name: lang.name,
+      description: lang.description,
+      helpText: lang.helpText,
     };
   });
 

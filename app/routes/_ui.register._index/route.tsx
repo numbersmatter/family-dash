@@ -55,8 +55,9 @@ export default function RegisterIndexPage() {
 
   return (
     <>
-      <div className="flex items-center">
-        <h2 className="text-lg font-semibold md:text-xl">
+      <div className="mx-auto max-w-7xl py-4 sm:py-6 lg:py-12 sm:px-6 lg:px-8">
+        {/* Content goes here */}
+        <h2 className="text-xl text-center font-semibold md:text-4xl">
           Open Registrations
         </h2>
       </div>

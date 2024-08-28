@@ -4,5 +4,4 @@ export const registerSchema = z.object({
   fname: z.string(),
   lname: z.string(),
   email: z.string(),
-  phone: z.string(),
 });

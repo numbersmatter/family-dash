@@ -265,7 +265,7 @@ export default function UIShell({
             <UserButton />
           </SignedIn>
         </header>
-        <main className="flex flex-1 flex-col overflow-auto">
+        <main className=" flex-1 overflow-auto">
           {children}
         </main>
       </div>

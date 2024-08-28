@@ -31,7 +31,7 @@ export function SemesterCard({ semester }: { semester: Semester }) {
   const phone = user?.phoneNumbers[0].phoneNumber ?? "Error";
 
   return (
-    <Card className="max-w-md">
+    <Card className="shadow-lg border border-gray-300 rounded-xl">
       <CardHeader>
         <CardTitle>
           {semester.name}

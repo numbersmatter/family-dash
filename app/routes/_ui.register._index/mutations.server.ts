@@ -12,7 +12,7 @@ export const register = async ({
 }) => {
   const submission = parseWithZod(formInput, { schema: registerSchema });
   if (submission.status === "success") {
-    const { semesterId, fname, lname, email, phone } = submission.value;
+    const { semesterId, fname, lname, email } = submission.value;
     const applicationId = await db.applications({ semesterId }).create({
       appUserId,
       data: {
@@ -23,7 +23,14 @@ export const register = async ({
           fname: fname,
           lname: lname,
           email: email,
-          phone: phone,
+          phone: "",
+        },
+        address: {
+          street: "",
+          city: "",
+          state: "NC",
+          zip: "",
+          unit: "",
         },
         adults: 1,
         students: [],
