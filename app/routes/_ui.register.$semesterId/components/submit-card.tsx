@@ -21,53 +21,55 @@ export function SubmitCard() {
 
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-center">
-          Submit Registration
-        </CardTitle>
-        <CardDescription>
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="text-center">
-          {
-            studentError.length > 0 &&
-            <p className="text-red-500">
-              {studentError[0]}
-            </p>
-          }
-          {
-            addressError.length > 0 &&
-            <p className="text-red-500">
-              {addressError[0]}
-            </p>
-          }
-          {
-            primaryContactError.length > 0 &&
-            <p className="text-red-500">
-              {primaryContactError[0]}
-            </p>
-          }
+    <div className="mx-auto max-w-7xl py-2 sm:py-4 sm:px-6 lg:px-8">
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-center">
+            Submit Registration
+          </CardTitle>
+          <CardDescription>
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="text-center">
+            {
+              studentError.length > 0 &&
+              <p className="text-red-500">
+                {studentError[0]}
+              </p>
+            }
+            {
+              addressError.length > 0 &&
+              <p className="text-red-500">
+                {addressError[0]}
+              </p>
+            }
+            {
+              primaryContactError.length > 0 &&
+              <p className="text-red-500">
+                {primaryContactError[0]}
+              </p>
+            }
 
-        </div>
-      </CardContent>
-      <CardFooter>
-        {
-          isSubmitted
-            ?
-            <p className="text-center text-xl font-semibold">
-              We are reviewing your application. Please check back later.
-            </p>
-            :
-            <Form method="post">
-              <input type="hidden" name="type" value="submit" />
-              <Button className="w-full" type="submit">
-                Submit
-              </Button>
-            </Form>
-        }
-      </CardFooter>
-    </Card>
+          </div>
+        </CardContent>
+        <CardFooter>
+          {
+            isSubmitted
+              ?
+              <p className="text-center text-xl font-semibold">
+                We are reviewing your application. Please check back later.
+              </p>
+              :
+              <Form method="post">
+                <input type="hidden" name="type" value="submit" />
+                <Button className="w-full" type="submit">
+                  Submit
+                </Button>
+              </Form>
+          }
+        </CardFooter>
+      </Card>
+    </div>
   )
 }

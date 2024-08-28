@@ -85,68 +85,70 @@ export function NumberAdults({ locale }: { locale?: string }) {
   const lang = locale === "es" ? spanish : english
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{lang.title} : {displayAdults}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <Drawer open={open} onOpenChange={setOpen}>
-          <DrawerTrigger asChild>
-            <Button variant="default">
-              {lang.button}
-            </Button>
-          </DrawerTrigger>
-          <DrawerContent>
-            <div className="mx-auto w-full max-w-sm">
-              <DrawerHeader>
-                <DrawerTitle>{lang.drawerTitle}</DrawerTitle>
-                <DrawerDescription>
-                  {lang.description}
-                </DrawerDescription>
-              </DrawerHeader>
-              <div className="p-4 pb-0">
-                <div className="flex items-center justify-center space-x-2">
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="h-8 w-8 shrink-0 rounded-full"
-                    onClick={decreaseAdults}
-                    disabled={count <= 1}
-                  >
-                    <Minus className="h-4 w-4" />
-                    <span className="sr-only"> {lang.decrease}</span>
-                  </Button>
-                  <div className="flex-1 text-center">
-                    <div className="text-7xl font-bold tracking-tighter">
-                      {count}
+    <div className="mx-auto max-w-7xl py-2 sm:py-4 sm:px-6 lg:px-8">
+      <Card>
+        <CardHeader>
+          <CardTitle>{lang.title} : {displayAdults}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Drawer open={open} onOpenChange={setOpen}>
+            <DrawerTrigger asChild>
+              <Button variant="default">
+                {lang.button}
+              </Button>
+            </DrawerTrigger>
+            <DrawerContent>
+              <div className="mx-auto w-full max-w-sm">
+                <DrawerHeader>
+                  <DrawerTitle>{lang.drawerTitle}</DrawerTitle>
+                  <DrawerDescription>
+                    {lang.description}
+                  </DrawerDescription>
+                </DrawerHeader>
+                <div className="p-4 pb-0">
+                  <div className="flex items-center justify-center space-x-2">
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="h-8 w-8 shrink-0 rounded-full"
+                      onClick={decreaseAdults}
+                      disabled={count <= 1}
+                    >
+                      <Minus className="h-4 w-4" />
+                      <span className="sr-only"> {lang.decrease}</span>
+                    </Button>
+                    <div className="flex-1 text-center">
+                      <div className="text-7xl font-bold tracking-tighter">
+                        {count}
+                      </div>
+                      <div className="text-[0.70rem] uppercase text-muted-foreground">
+                        {lang.title}
+                      </div>
                     </div>
-                    <div className="text-[0.70rem] uppercase text-muted-foreground">
-                      {lang.title}
-                    </div>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="h-8 w-8 shrink-0 rounded-full"
+                      onClick={increaseAdults}
+                    >
+                      <Plus className="h-4 w-4" />
+                      <span className="sr-only">{lang.increase}</span>
+                    </Button>
                   </div>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="h-8 w-8 shrink-0 rounded-full"
-                    onClick={increaseAdults}
-                  >
-                    <Plus className="h-4 w-4" />
-                    <span className="sr-only">{lang.increase}</span>
-                  </Button>
+                  <div className="mt-3 h-[120px]">
+                  </div>
                 </div>
-                <div className="mt-3 h-[120px]">
-                </div>
+                <DrawerFooter>
+                  <Button onClick={handleSubmit}>{lang.button}</Button>
+                  <DrawerClose asChild>
+                    <Button variant="outline">{lang.cancel}</Button>
+                  </DrawerClose>
+                </DrawerFooter>
               </div>
-              <DrawerFooter>
-                <Button onClick={handleSubmit}>{lang.button}</Button>
-                <DrawerClose asChild>
-                  <Button variant="outline">{lang.cancel}</Button>
-                </DrawerClose>
-              </DrawerFooter>
-            </div>
-          </DrawerContent>
-        </Drawer>
-      </CardContent>
-    </Card>
+            </DrawerContent>
+          </Drawer>
+        </CardContent>
+      </Card>
+    </div>
   )
 }

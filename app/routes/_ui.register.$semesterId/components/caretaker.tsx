@@ -49,21 +49,23 @@ export function CaretakerCard() {
   const lang = locale === "es" ? spanish : english
 
   return (
+    <div className="mx-auto max-w-7xl py-2 sm:py-4 sm:px-6 lg:px-8">
 
-    <FormCard
-      title={lang.title}
-      description={lang.description}
-      footer={<Link to="/profile"><Button variant="outline">{lang.edit}</Button></Link>}
-    >
-      <ContentCaretakers />
-    </FormCard>
+      <FormCard
+        title={lang.title}
+        description={lang.description}
+        footer={<Link to="/profile"><Button variant="outline">{lang.edit}</Button></Link>}
+      >
+        <ContentCaretakers />
+      </FormCard>
+    </div>
   )
 }
 
 
 
 function ContentCaretakers() {
-  const { primary_caretaker, usage, locale } = useLoaderData<typeof loader>();
+  const { usage, locale } = useLoaderData<typeof loader>();
   const { user } = useUser();
 
   const english = {
@@ -126,14 +128,7 @@ function ContentCaretakers() {
               {user?.emailAddresses[0].emailAddress}
             </dd>
           </div>
-          <div className="border-t border-gray-100 px-4 py-6 sm:col-span-1 sm:px-0">
-            <dt className="text-sm font-medium leading-6 text-gray-900">
-              {lang.cellPhone}
-            </dt>
-            <dd className="mt-1 text-sm leading-6 text-gray-700 sm:mt-2">
-              {user?.phoneNumbers[0].phoneNumber}
-            </dd>
-          </div>
+
           <div className="border-t border-gray-100 px-4 py-6 sm:col-span-2 sm:px-0">
             <dt className="text-sm font-medium leading-6 text-gray-900">
               {lang.dataUsage}

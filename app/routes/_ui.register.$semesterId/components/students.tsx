@@ -64,13 +64,15 @@ export function StudentsCard() {
   const lang = rootData?.locale === "es" ? spanish : english
 
   return (
-    <FormCard
-      title={lang.title}
-      description={lang.description}
-      footer={<AddStudentDialog />}
-    >
-      <ContentStudents />
-    </FormCard>
+    <div className="mx-auto max-w-7xl py-2 sm:py-4 sm:px-6 lg:px-8">
+      <FormCard
+        title={lang.title}
+        description={lang.description}
+        footer={<AddStudentDialog />}
+      >
+        <ContentStudents />
+      </FormCard>
+    </div>
   )
 }
 
