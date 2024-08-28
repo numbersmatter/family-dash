@@ -1,3 +1,4 @@
+import { intializeFb } from "../firebase.server";
 import { firestore } from "../firestore.server";
 
 interface FoodOpportunity {
@@ -11,6 +12,7 @@ interface FoodOpportunity {
 }
 
 export const foodOpportunityDb = () => {
+  intializeFb();
   const collection = firestore.collection("/food_opportunities");
   const read = async (id: string) => {
     const doc = await collection.doc(id).get();

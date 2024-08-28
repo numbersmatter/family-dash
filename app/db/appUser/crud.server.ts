@@ -1,5 +1,6 @@
 import { FieldValue } from "firebase-admin/firestore";
 import { firestore } from "../firestore.server";
+import { intializeFb } from "../firebase.server";
 
 interface AppUser {
   id: string;
@@ -15,6 +16,7 @@ interface AppUserCreate
   extends Omit<AppUserDbModel, "createdDate" | "updatedDate"> {}
 
 export const appUserDb = () => {
+  // const database = intializeFb();
   const collection = firestore.collection("/appUsers");
 
   const read = async (id: string) => {

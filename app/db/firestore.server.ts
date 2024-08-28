@@ -1,4 +1,4 @@
 import { getFirestore } from "firebase-admin/firestore";
-import { firebase } from "./firebase.server";
+import { intializeFb } from "./firebase.server";
 
-export const firestore = getFirestore(firebase);
+export const firestore = getFirestore(intializeFb());
