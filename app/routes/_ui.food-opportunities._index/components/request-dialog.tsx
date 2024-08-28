@@ -1,4 +1,4 @@
-import { Form, useActionData, useFetcher, useLoaderData } from "@remix-run/react";
+import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import { Button } from "~/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "~/components/ui/dialog";
 import { Input } from "~/components/ui/input";
@@ -7,15 +7,18 @@ import { action, loader } from "../route";
 import { getFormProps, useForm } from "@conform-to/react";
 import { z } from "zod";
 import { parseWithZod } from "@conform-to/zod";
+import { useState } from "react";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "~/components/ui/select";
 
 
 const requestSchema = z.object({
   timeSlot: z.string(),
 });
 
-export function RequestDialog() {
+export function RequestDialog({ opportunityId, timeSlots }: { timeSlots: { id: string, label: string }[], opportunityId: string }) {
   const { locale } = useLoaderData<typeof loader>();
   const lastResult = useActionData<typeof action>();
+  const [slot, setSlot] = useState(timeSlots[0].id);
 
   const [form, fields] = useForm({
     lastResult,
@@ -64,16 +67,31 @@ export function RequestDialog() {
             <input
               hidden
               id={fields.timeSlot.id} name={fields.timeSlot.name}
+              value={slot}
             />
+            <Select value={slot} onValueChange={setSlot}>
+              <SelectTrigger className="w-[200px]">
+                <SelectValue placeholder={lang.timeSlot} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>{lang.timeSlot}</SelectLabel>
+                  {timeSlots.map((slot) => (
+                    <SelectItem key={slot.id} value={slot.id}>
+                      {slot.label}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
           </div>
           <DialogFooter>
-            <Button variant={"default"} name={"type"} value={"addMinor"} type="submit">
+            <Button variant={"default"} name={"opportunityId"} value={opportunityId} type="submit">
               {lang.submit}
             </Button>
           </DialogFooter>
         </Form>
       </DialogContent>
-
     </Dialog>
   )
 }

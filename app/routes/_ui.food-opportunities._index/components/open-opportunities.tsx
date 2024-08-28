@@ -20,6 +20,7 @@ import {
   TableRow,
 } from "~/components/ui/table"
 import { loader } from "../route"
+import { RequestDialog } from "./request-dialog"
 
 interface TimeSlots {
   id: string;
@@ -90,14 +91,14 @@ export default function OpenOpportunities() {
                     </TableCell>
                     <TableCell>
                       {
-                        opportunity ?
-                          <Button variant={"default"} size={"sm"}>
-                            Request
-                          </Button>
-                          :
+                        opportunity.confirm ?
                           <span className="text-lg font-semibold">
                             {/* {opportunity.code} */}
+                            {opportunity.confirm}
                           </span>
+                          :
+                          <RequestDialog timeSlots={opportunity.timeSlots} opportunityId={opportunity.id} />
+
                       }
                     </TableCell>
                   </TableRow>

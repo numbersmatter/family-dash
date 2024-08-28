@@ -7,6 +7,7 @@ interface FoodOpportunity {
   status: "open" | "closed" | "past";
   code: "pickup" | "drive-thru" | "error";
   date: string;
+  timeSlots: { id: string; label: string }[];
 }
 
 export const foodOpportunityDb = () => {
@@ -25,6 +26,7 @@ export const foodOpportunityDb = () => {
       code: doc.data()?.code ?? "error",
       date: doc.data()?.date.toDate().toLocaleDateString() ?? "error",
       applied: doc.data()?.applied ?? "error",
+      timeSlots: doc.data()?.timeSlots ?? [{ id: "default", label: "default" }],
     };
   };
 
@@ -40,6 +42,9 @@ export const foodOpportunityDb = () => {
         code: doc.data()?.code ?? "error",
         date: doc.data()?.date.toDate().toLocaleDateString() ?? "error",
         applied: doc.data()?.applied ?? "error",
+        timeSlots: doc.data()?.timeSlots ?? [
+          { id: "default", label: "default" },
+        ],
       } as FoodOpportunity;
     });
   };
