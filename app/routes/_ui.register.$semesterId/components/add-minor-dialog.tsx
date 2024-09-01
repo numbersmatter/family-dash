@@ -4,10 +4,22 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { loader } from "../route";
+import { useEffect, useState } from "react";
 
 export function AddMinorDialog() {
   const { locale } = useLoaderData<typeof loader>();
   const fetcher = useFetcher();
+  const [open, setOpen] = useState(false);
+
+  const isFetching = fetcher.state !== "idle";
+  // @ts-expect-error property does exist when needed 
+  const success = fetcher.data?.status === "success" ? true : false;
+
+  useEffect(() => {
+    if (success && !isFetching) {
+      setOpen(false);
+    }
+  }, [success, isFetching]);
 
   const english = {
     button: "Add Minor",
@@ -33,7 +45,7 @@ export function AddMinorDialog() {
   const lang = locale === "es" ? spanish : english;
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="default">
           {lang.button}
@@ -83,7 +95,7 @@ export function AddMinorDialog() {
             </div>
           </div>
           <DialogFooter>
-            <Button variant={"default"} name={"type"} value={"addMinor"} type="submit">
+            <Button disabled={isFetching} variant={"default"} name={"type"} value={"addMinor"} type="submit">
               {lang.submit}
             </Button>
           </DialogFooter>

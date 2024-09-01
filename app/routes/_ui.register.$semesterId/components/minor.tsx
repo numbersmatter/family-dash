@@ -1,4 +1,4 @@
-import { useLoaderData } from "@remix-run/react"
+import { useFetcher, useLoaderData } from "@remix-run/react"
 import { EllipsisVerticalIcon } from "lucide-react"
 import { Button } from "~/components/ui/button"
 import {
@@ -11,6 +11,7 @@ import {
 import { loader } from "../route"
 import { FormCard } from "./form-card"
 import { AddMinorDialog } from "./add-minor-dialog"
+import { action } from "~/root"
 
 type Minor = {
   name: string
@@ -62,6 +63,20 @@ export function MinorsCard() {
 
 function ContentMinors() {
   const { minors } = useLoaderData<typeof loader>()
+  const fetcher = useFetcher<typeof action>();
+
+
+  const removeStudent = async (id: string) => {
+
+    const formInput = new FormData();
+    formInput.append("type", "removeMinor");
+    formInput.append("minorId", id);
+
+    const result = await fetcher.submit(formInput, { method: "post" });
+    return result;
+  }
+
+
   return (
     <ul className="divide-y divide-gray-100">
       {minors.map((minor) => (
@@ -97,8 +112,12 @@ function ContentMinors() {
                 <DropdownMenuLabel>
                   Options
                 </DropdownMenuLabel>
-                <DropdownMenuItem>Edit</DropdownMenuItem>
-                <DropdownMenuItem>Remove</DropdownMenuItem>
+
+                <DropdownMenuItem
+                  onClick={() => removeStudent(minor.id)}
+                >
+                  Remove
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
