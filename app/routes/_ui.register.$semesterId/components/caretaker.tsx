@@ -22,6 +22,7 @@ import { Link, useLoaderData } from "@remix-run/react"
 import { loader } from "../route"
 import { FormCard } from "./form-card"
 import { useUser } from "@clerk/remix"
+import { UpdatePhoneDialog } from "./update-phone-dialog"
 
 type Person = {
   name: string
@@ -54,7 +55,7 @@ export function CaretakerCard() {
       <FormCard
         title={lang.title}
         description={lang.description}
-        footer={<Link to="/profile"><Button variant="outline">{lang.edit}</Button></Link>}
+        footer={<UpdatePhoneDialog />}
       >
         <ContentCaretakers />
       </FormCard>
@@ -65,8 +66,8 @@ export function CaretakerCard() {
 
 
 function ContentCaretakers() {
-  const { usage, locale } = useLoaderData<typeof loader>();
-  const { user } = useUser();
+  const { usage, locale, clerkUser } = useLoaderData<typeof loader>();
+  // const { user } = useUser();
 
   const english = {
     title: "Contact Information",
@@ -109,7 +110,7 @@ function ContentCaretakers() {
               {lang.firstName}
             </dt>
             <dd className="mt-1 text-sm leading-6 text-gray-700 sm:mt-2">
-              {user?.firstName}
+              {clerkUser.fname}
             </dd>
           </div>
           <div className="border-t border-gray-100 px-4 py-6 sm:col-span-1 sm:px-0">
@@ -117,7 +118,7 @@ function ContentCaretakers() {
               {lang.lastName}
             </dt>
             <dd className="mt-1 text-sm leading-6 text-gray-700 sm:mt-2">
-              {user?.lastName}
+              {clerkUser.lname}
             </dd>
           </div>
           <div className="border-t border-gray-100 px-4 py-6 sm:col-span-1 sm:px-0">
@@ -125,7 +126,15 @@ function ContentCaretakers() {
               {lang.email}
             </dt>
             <dd className="mt-1 text-sm leading-6 text-gray-700 sm:mt-2">
-              {user?.emailAddresses[0].emailAddress}
+              {clerkUser.email}
+            </dd>
+          </div>
+          <div className="border-t border-gray-100 px-4 py-6 sm:col-span-1 sm:px-0">
+            <dt className="text-sm font-medium leading-6 text-gray-900">
+              {lang.cellPhone}
+            </dt>
+            <dd className="mt-1 text-sm leading-6 text-gray-700 sm:mt-2">
+              {clerkUser.phone}
             </dd>
           </div>
 

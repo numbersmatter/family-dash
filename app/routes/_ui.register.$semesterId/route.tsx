@@ -26,7 +26,12 @@ import {
 } from "./mutations/mutate-minor.server";
 import { submit } from "./mutations/submit-mutation.server";
 import { UnderReviewCard } from "./components/under-review-card";
-import { getAuth } from "@clerk/remix/ssr.server";
+import { getAuth, } from "@clerk/remix/ssr.server";
+import { createClerkClient } from "@clerk/remix/api.server";
+import { SubmissionResult } from "@conform-to/react";
+import { updatePhone } from "./mutations/mutate-phone.server";
+
+
 
 
 export const loader = async (args: LoaderFunctionArgs) => {
@@ -36,11 +41,23 @@ export const loader = async (args: LoaderFunctionArgs) => {
     throw redirect("/sign-in");
   }
 
+  // Initialize clerkClient and perform an operation
+  const clerkClient = await createClerkClient({
+    secretKey: process.env.CLERK_SECRET_KEY,
+  }).users.getUser(userId)
+
+  const clerkUser = {
+    fname: clerkClient.firstName,
+    lname: clerkClient.lastName,
+    email: clerkClient.primaryEmailAddress?.emailAddress ?? "",
+    phone: clerkClient.primaryPhoneNumber?.phoneNumber ?? "",
+  }
+
   const appUserId = userId.split("_", 2)[1];
   let locale = await i18nServer.getLocale(args.request);
   const data = await getRegisterData({ semesterId, appUserId });
 
-  return json({ ...data, locale });
+  return json({ ...data, clerkUser, locale });
 };
 
 
@@ -83,6 +100,10 @@ export const action = async (args: ActionFunctionArgs) => {
   if (type === "removeMinor") {
     return removeMinor({ formInput, appUserId, semesterId });
   }
+  if (type === "updatePhone") {
+    return updatePhone({ formInput, appUserId, semesterId });
+  }
+
   // if (type === "updateMinor") {
   //   return updateMinor({ formInput, userId, reg_id });
   // }
@@ -92,7 +113,7 @@ export const action = async (args: ActionFunctionArgs) => {
   }
 
 
-  return json({ ...checkType.reply(), "status": "error", "error": { "type": ["No action provided"] } }, { status: 500 });
+  return json({ ...checkType.reply(), "status": "error", "error": { "type": ["No action provided"] } });
   // return json({ success: false, status: "error", error: { type: ["Unknown type"] } });
 }
 
@@ -104,7 +125,7 @@ export default function ServicePeriodEnrollment() {
 
   const isSubmitted = status === "pending";
 
-  if (status === "in-progress") {
+  if (status === "pending") {
     return <UnderReviewCard />
   }
 

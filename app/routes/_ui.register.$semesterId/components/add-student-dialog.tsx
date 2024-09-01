@@ -20,12 +20,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select"
-import { action } from "~/routes/api.register.$reg_id.students/route";
+
 import { useEffect, useState } from "react";
 import { useForm, getFormProps, getInputProps, getSelectProps } from "@conform-to/react";
 import { parseWithZod } from "@conform-to/zod";
 import { AddStudentSchema } from "../schemas";
-import { loader } from "../route";
+import { action, loader } from "../route";
 
 export function AddStudentDialog() {
   const { locale } = useLoaderData<typeof loader>();

@@ -12,6 +12,7 @@ export const actionTypesSchema = z.object({
       "removeMinor",
       "updateMinor",
       "submit",
+      "updatePhone",
     ],
     {
       errorMap(issue, ctx) {
@@ -45,6 +46,12 @@ export const primaryContactSchema = z.object({
   email: z
     .string({ required_error: "Email is required" })
     .min(3, { message: "Email must be at least 1 character" }),
+  phone: z
+    .string({ required_error: "Phone is required" })
+    .min(10, { message: "Phone must be at least 10 characters" }),
+});
+
+export const updatePhoneSchema = z.object({
   phone: z
     .string({ required_error: "Phone is required" })
     .min(10, { message: "Phone must be at least 10 characters" }),

@@ -41,16 +41,16 @@ export const submit = async ({
     students: application.students,
   };
 
-  const submissionContact = primaryContactSchema.safeParse(
-    appData.primaryContact
-  );
-  if (!submissionContact.success) {
-    return json({
-      status: "error",
-      error: { primaryContact: ["Invalid primary contact"] },
-      zodError: submissionContact.error,
-    });
-  }
+  // const submissionContact = primaryContactSchema.safeParse(
+  //   appData.primaryContact
+  // );
+  // if (!submissionContact.success) {
+  //   return json({
+  //     status: "error",
+  //     error: { primaryContact: ["Invalid primary contact"] },
+  //     zodError: submissionContact.error,
+  //   });
+  // }
 
   const submissionAddress = addressSchema.safeParse(appData.address);
   if (!submissionAddress.success) {
