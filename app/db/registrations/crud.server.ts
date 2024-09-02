@@ -1,9 +1,11 @@
-import { FieldValue } from "firebase-admin/firestore";
+import { FieldValue, Timestamp } from "firebase-admin/firestore";
 import { firestore } from "../firestore.server";
 import { Registration, RegistrationDb } from "./registration-types";
 
-export const regDb = () => {
-  const collection = firestore.collection("registrations");
+export const regDb = ({ semesterId }: { semesterId: string }) => {
+  const collection = firestore.collection(
+    `/semesters/${semesterId}/registrations`
+  );
 
   const read = async (id: string) => {
     const doc = await collection.doc(id).get();
@@ -25,6 +27,7 @@ export const regDb = () => {
       adults: doc.data()?.adults ?? 0,
       students: doc.data()?.students ?? [],
       minors: doc.data()?.minors ?? [],
+      createdDate: doc.data()?.createdDate ?? Timestamp.fromDate(new Date()),
     } as Registration;
   };
 

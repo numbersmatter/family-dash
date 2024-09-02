@@ -1,3 +1,4 @@
+import { Timestamp } from "firebase-admin/firestore";
 import { Minor, Student } from "../registrations/registration-types";
 
 interface Application {
@@ -21,6 +22,7 @@ interface Application {
   adults: number;
   students: Student[];
   minors: Minor[];
+  createdDate: Timestamp;
 }
 
 interface ApplicationDb extends Omit<Application, "id"> {}

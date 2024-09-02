@@ -5,10 +5,12 @@ import { semesterDb } from "./semesters/crud.server";
 import { userSemestersDb } from "./user-semesters/crud.server";
 import { foodOpportunityDb } from "./food-opportunities/crud.server";
 import { opportunityRequestDb } from "./opportunity-request/crud.server";
+import { organizationDb } from "./organization/crud.server";
 
 export const db = {
   semesters: semesterDb(),
-  registrations: regDb(),
+  registrations: ({ semesterId }: { semesterId: string }) =>
+    regDb({ semesterId }),
   appUser: appUserDb(),
   applications: ({ semesterId }: { semesterId: string }) =>
     applicationsDb({ semesterId }),
@@ -17,4 +19,5 @@ export const db = {
   food_opportunities: foodOpportunityDb(),
   opportunity_requests: ({ opportunityId }: { opportunityId: string }) =>
     opportunityRequestDb({ opportunityId }),
+  organization: organizationDb(),
 };

@@ -1,4 +1,4 @@
-import { FieldValue } from "firebase-admin/firestore";
+import { FieldValue, Timestamp } from "firebase-admin/firestore";
 import { firestore } from "../firestore.server";
 import { Student, Minor } from "../registrations/registration-types";
 import { Application, ApplicationDb } from "./app-types";
@@ -36,6 +36,7 @@ export const applicationsDb = ({ semesterId }: { semesterId: string }) => {
       adults: doc.data()?.adults ?? 0,
       students: doc.data()?.students ?? [],
       minors: doc.data()?.minors ?? [],
+      createdDate: doc.data()?.createdDate ?? Timestamp.fromDate(new Date()),
     } as Application;
   };
 

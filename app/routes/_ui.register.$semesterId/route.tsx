@@ -125,7 +125,7 @@ export default function ServicePeriodEnrollment() {
 
   const isSubmitted = status === "pending";
 
-  if (status === "in-progress") {
+  if (isSubmitted) {
     return <UnderReviewCard />
   }
 

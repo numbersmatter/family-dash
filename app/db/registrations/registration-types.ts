@@ -1,3 +1,5 @@
+import { Timestamp } from "firebase-admin/firestore";
+
 interface Student {
   id: string;
   fname: string;
@@ -25,6 +27,7 @@ interface Registration {
   adults: number;
   students: Student[];
   minors: Minor[];
+  createdDate: Timestamp;
 }
 
 interface RegistrationDb extends Omit<Registration, "id"> {}

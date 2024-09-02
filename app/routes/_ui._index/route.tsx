@@ -7,6 +7,7 @@ import { getDashboardData } from "./data-fetchers";
 import i18nServer from "~/modules/i18n.server";
 import { getAuth } from "@clerk/remix/ssr.server";
 import { RedirectToSignIn, SignedOut } from "@clerk/remix";
+import { requireRegistration } from "~/lib/business-logic/registration.server";
 
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
@@ -34,8 +35,9 @@ export const loader = async (args: LoaderFunctionArgs) => {
   }
 
   const appUserStart = userId ?? "user_12345";
-
   const appUserId = appUserStart.split("_", 2)[1];
+
+  const registrationDoc = await requireRegistration(appUserId);
 
 
   const t = await i18nServer.getFixedT(args.request);
@@ -49,13 +51,13 @@ export const loader = async (args: LoaderFunctionArgs) => {
 
 
 
-  return json({ ...pageData, meta });
+  return json({ ...pageData, meta, registrationDoc });
 };
 
 
 
 export default function Dashboard() {
-  // const { } = useLoaderData<typeof loader>()
+  const { registrationDoc } = useLoaderData<typeof loader>()
   const { t } = useTranslation();
 
 
@@ -86,6 +88,9 @@ export default function Dashboard() {
           </p>
 
         </div>
+      </div>
+      <div className="">
+        <pre>{JSON.stringify(registrationDoc, null, 2)}</pre>
       </div>
       <SignedOut>
         <RedirectToSignIn />
