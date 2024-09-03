@@ -92,10 +92,76 @@ export const appUserDb = () => {
     return write;
   };
 
+  const removeStudent = async ({
+    appUserId,
+    studentId,
+  }: {
+    appUserId: string;
+    studentId: string;
+  }) => {
+    const docRef = collection.doc(appUserId);
+    const doc = await read(appUserId);
+
+    const currentStudents = doc?.students ?? [];
+
+    const newStudents = currentStudents.filter(
+      (student: Student) => student.id !== studentId
+    );
+    const writeData = {
+      students: newStudents,
+    };
+
+    const write = await docRef.update(writeData);
+    return write;
+  };
+
+  const addMinor = async ({
+    appUserId,
+    minor,
+  }: {
+    appUserId: string;
+    minor: Minor;
+  }) => {
+    const docRef = collection.doc(appUserId);
+
+    const writeData = {
+      minors: FieldValue.arrayUnion(minor),
+    };
+
+    const write = await docRef.update(writeData);
+    return write;
+  };
+
+  const removeMinor = async ({
+    appUserId,
+    minorId,
+  }: {
+    appUserId: string;
+    minorId: string;
+  }) => {
+    const docRef = collection.doc(appUserId);
+    const doc = await read(appUserId);
+
+    const currentMinors = doc?.minors ?? [];
+
+    const newMinors = currentMinors.filter(
+      (minor: Minor) => minor.id !== minorId
+    );
+    const writeData = {
+      minors: newMinors,
+    };
+
+    const write = await docRef.update(writeData);
+    return write;
+  };
+
   return {
     read,
     create,
     update,
     addStudent,
+    removeStudent,
+    addMinor,
+    removeMinor,
   };
 };

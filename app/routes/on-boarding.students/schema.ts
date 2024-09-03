@@ -27,3 +27,7 @@ export const AddStudentSchema = z.object({
 export const RemoveStudentSchema = z.object({
   studentId: z.string({ required_error: "Student ID is required" }),
 });
+
+export const ValidActionTypes = z.object({
+  type: z.enum(["addStudent", "removeStudent"]),
+});

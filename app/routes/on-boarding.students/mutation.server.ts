@@ -31,11 +31,9 @@ const addStudentMutation = async ({
 export const addStudent = async ({
   formInput,
   appUserId,
-  semesterId,
 }: {
   formInput: FormData;
   appUserId: string;
-  semesterId: string;
 }) => {
   const submission = parseWithZod(formInput, { schema: AddStudentSchema });
   if (submission.status === "success") {
@@ -51,13 +49,11 @@ export const addStudent = async ({
 const removeStudentMutation = async ({
   appUserId,
   studentId,
-  semesterId,
 }: {
   studentId: string;
   appUserId: string;
-  semesterId: string;
 }) => {
-  const write = await db.applications({ semesterId }).removeStudent({
+  const write = await db.appUser.removeStudent({
     appUserId,
     studentId,
   });
@@ -67,11 +63,9 @@ const removeStudentMutation = async ({
 export const removeStudent = async ({
   formInput,
   appUserId,
-  semesterId,
 }: {
   formInput: FormData;
   appUserId: string;
-  semesterId: string;
 }) => {
   const submission = parseWithZod(formInput, { schema: RemoveStudentSchema });
   if (submission.status !== "success") {
@@ -80,7 +74,7 @@ export const removeStudent = async ({
 
   const write = await removeStudentMutation({
     studentId: submission.value.studentId,
-    semesterId,
+
     appUserId,
   });
   return json(submission.reply());

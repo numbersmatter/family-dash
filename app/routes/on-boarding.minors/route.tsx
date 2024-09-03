@@ -1,12 +1,15 @@
-import { json, redirect, useLoaderData } from "@remix-run/react"
+import { json, redirect, useLoaderData } from "@remix-run/react";
 import type { LoaderFunctionArgs, ActionFunctionArgs } from "@remix-run/node";
-import { StudentsCard } from "./components/student-card";
-import { getAuth } from "@clerk/remix/ssr.server";
 import { db } from "~/db/db.server";
-import InstructionCard from "./components/instruction-card";
-import { addStudent, removeStudent } from "./mutation.server";
+import { getAuth } from "@clerk/remix/ssr.server";
+import { ValidActionTypes } from "./schemas";
 import { parseWithZod } from "@conform-to/zod";
-import { ValidActionTypes } from "./schema";
+import { addMinor, removeMinor } from "./mutations.server";
+import InstructionCard from "./components/instruction-card";
+import { Minor } from "~/db/registrations/registration-types";
+import MinorsCard from "./components/minors-card";
+
+
 
 export const loader = async (args: LoaderFunctionArgs) => {
   const { userId } = await getAuth(args);
@@ -17,33 +20,30 @@ export const loader = async (args: LoaderFunctionArgs) => {
 
   const appUser = await db.appUser.read(appUserId);
 
-  const students = appUser?.students
   const locale = appUser?.language
+  const minors = appUser?.minors ?? [] as Minor[]
 
 
-  return json({ students, locale });
+  return json({ minors, locale });
 };
-
-
 
 export const action = async (args: ActionFunctionArgs) => {
   const { userId } = await getAuth(args);
   if (!userId) {
     throw redirect("/sign-in");
   }
-
   const appUserId = userId.split("_", 2)[1];
 
   const formInput = await args.request.formData();
 
   const type = formInput.get("type");
 
-  if (type === "addStudent") {
-    return addStudent({ formInput, appUserId });
+  if (type === "addMinor") {
+    return addMinor({ formInput, appUserId });
   }
 
-  if (type === "removeStudent") {
-    return removeStudent({ formInput, appUserId });
+  if (type === "removeMinor") {
+    return removeMinor({ formInput, appUserId });
   }
 
   const submission = parseWithZod(formInput, { schema: ValidActionTypes });
@@ -51,23 +51,18 @@ export const action = async (args: ActionFunctionArgs) => {
   return json(submission.reply());
 };
 
+export default function MinorsPage() {
+  const { minors, locale } = useLoaderData<typeof loader>();
 
-
-export default function StudentsPage() {
-  const loaderData = useLoaderData<typeof loader>();
   return (
     <div className="grid min-h-screen w-full">
       <div className="flex flex-col place-content-center">
         <main className="flex flex-1 flex-col overflow-y-auto gap-4 p-4 lg:gap-6 lg:p-6">
           <InstructionCard />
-          <StudentsCard />
+          <MinorsCard />
         </main>
       </div>
     </div>
+
   )
 }
-
-
-
-
-

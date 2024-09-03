@@ -91,7 +91,7 @@ export function AddStudentDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="default">
+        <Button variant="default" className="w-full md:w-auto">
           {lang.button}
         </Button>
       </DialogTrigger>
