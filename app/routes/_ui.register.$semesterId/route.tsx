@@ -4,7 +4,7 @@ import { FormCard } from "./components/form-card";
 import {
   CaretakerCard,
 } from "./components/caretaker";
-import { AddressCard } from "./components/address";
+// import { AddressCard } from "../on-boarding/componets/address";
 import {
   MinorsCard,
 } from "./components/minor";
@@ -138,7 +138,7 @@ export default function ServicePeriodEnrollment() {
     <>
       <Header />
       <CaretakerCard />
-      <AddressCard />
+      {/* <AddressCard /> */}
       <NumberAdults />
       <StudentsCard />
       <MinorsCard />

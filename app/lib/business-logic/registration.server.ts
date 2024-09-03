@@ -1,6 +1,16 @@
 import { redirect } from "@remix-run/node";
 import { db } from "~/db/db.server";
 
+type RegistrationStatus = "onboarding" | "registered" | "applied" | "error";
+
+type RegistrationStatusDoc = {
+  status: RegistrationStatus;
+  semesterId: string;
+  semesterName: string;
+  registeredDate?: Date;
+  applicationDate?: Date;
+};
+
 export const isRegistered = async (userId: string) => {
   const activeSemester = await db.organization.activeSemester();
   if (!activeSemester) {
@@ -17,27 +27,27 @@ export const isRegistered = async (userId: string) => {
       semesterId: activeSemester.semester_id,
       semesterName: activeSemester.name,
       registeredDate: registeredUserDoc.createdDate.toDate(),
-    };
+    } as RegistrationStatusDoc;
   }
 
   // check to see if user has application for the semester
   const applicationDoc = await db
     .applications({ semesterId: activeSemester.semester_id })
     .read(userId);
-  if (applicationDoc) {
+  if (applicationDoc?.status === "pending") {
     return {
-      status: "application",
+      status: "applied",
       semesterId: activeSemester.semester_id,
       semesterName: activeSemester.name,
       applicationDate: applicationDoc.createdDate.toDate(),
-    };
+    } as RegistrationStatusDoc;
   }
 
   return {
     status: "onboarding",
     semesterId: activeSemester.semester_id,
     semesterName: activeSemester.name,
-  };
+  } as RegistrationStatusDoc;
 };
 
 export const requireRegistration = async (userId: string) => {
@@ -51,5 +61,5 @@ export const requireRegistration = async (userId: string) => {
     };
   }
 
-  return redirect("/on-boarding");
+  throw redirect("/on-boarding");
 };
