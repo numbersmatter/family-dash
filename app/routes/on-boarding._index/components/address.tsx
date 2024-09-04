@@ -1,14 +1,5 @@
-import { Form, useFetcher, useLoaderData } from "@remix-run/react"
+import { Form, useActionData, useLoaderData } from "@remix-run/react"
 import { Button } from "~/components/ui/button"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "~/components/ui/dialog"
 import { Input } from "~/components/ui/input"
 import { Label } from "~/components/ui/label"
 import { action, loader } from "../route"
@@ -22,9 +13,10 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 
 export function AddressCard() {
   const { locale, address } = useLoaderData<typeof loader>()
+  const actionData = useActionData<typeof action>()
   const [form, fields] = useForm({
     // Sync the result of last submission
-
+    lastResult: actionData,
 
     // Reuse the validation logic on the client
     onValidate({ formData }) {
@@ -66,8 +58,8 @@ export function AddressCard() {
 
 
 
-  // const lang = locale === "es" ? spanish : english
-  const lang = spanish
+  const lang = locale === "es" ? spanish : english
+  // const lang = spanish
 
   return (
     <Card>

@@ -34,7 +34,8 @@ export const isRegistered = async (userId: string) => {
   const applicationDoc = await db
     .applications({ semesterId: activeSemester.semester_id })
     .read(userId);
-  if (applicationDoc?.status === "pending") {
+
+  if (applicationDoc) {
     return {
       status: "applied",
       semesterId: activeSemester.semester_id,

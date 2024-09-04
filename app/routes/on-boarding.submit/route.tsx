@@ -50,7 +50,7 @@ export const action = async (args: ActionFunctionArgs) => {
   const formInput = await args.request.formData();
   const type = formInput.get("type");
 
-  if (type !== "onboard") {
+  if (type !== "submit") {
     throw new Error("Invalid type");
   }
 
@@ -59,7 +59,7 @@ export const action = async (args: ActionFunctionArgs) => {
     appUserId,
   })
 
-  redirect(`/on-boarding`)
+  return redirect(`/on-boarding`)
 
 }
 

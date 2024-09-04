@@ -1,4 +1,4 @@
-import { Link, useFetcher, useLoaderData, useRouteLoaderData } from "@remix-run/react"
+import { Link, useFetcher, useLoaderData, useNavigate, useRouteLoaderData } from "@remix-run/react"
 import { EllipsisVerticalIcon } from "lucide-react"
 import { Button } from "~/components/ui/button"
 import {
@@ -31,20 +31,25 @@ type Lang = {
 
 
 export function StudentsCard() {
-  const routeData = useLoaderData<typeof loader>();
+  const loaderData = useLoaderData<typeof loader>();
+  const navigate = useNavigate();
   const english = {
     title: "Students",
     description: "Enter Students",
     button: "Continue",
+    studentRequired: "This program requires at least one student to be enrolled in Thomasville City Schools. Please add a student.",
   }
 
   const spanish = {
     title: "Estudiantes",
     description: "Ingrese estudiantes",
     button: "Continuar",
+    studentRequired: "Este programa requiere al menos un estudiante inscripto en escuelas de Thomasville. Por favor agregue un estudiante.",
   }
 
-  const lang = routeData?.locale === "es" ? spanish : english
+  const lang = loaderData?.locale === "es" ? spanish : english
+
+  const noStudents = loaderData.students.length < 1
 
   return (
     <Card>
@@ -57,15 +62,22 @@ export function StudentsCard() {
         </CardDescription>
       </CardHeader>
       <CardContent>
+        {
+          noStudents && <p className="text-sm text-red-500">
+            {lang.studentRequired}
+          </p>}
         <ContentStudents />
       </CardContent>
       <CardFooter className="flex flex-col justify-between gap-4 md:flex-row md:gap-8 ">
         <AddStudentDialog />
-        <Link to="/on-boarding/minors" className="w-full md:w-auto">
-          <Button variant="default" className="w-full md:w-auto">
-            {lang.button}
-          </Button>
-        </Link>
+        <Button
+          variant="default"
+          className="w-full md:w-auto"
+          disabled={noStudents}
+          onClick={() => navigate("/on-boarding/minors")}
+        >
+          {lang.button}
+        </Button>
       </CardFooter>
     </Card>
 

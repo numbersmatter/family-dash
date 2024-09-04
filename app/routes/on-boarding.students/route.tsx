@@ -16,9 +16,12 @@ export const loader = async (args: LoaderFunctionArgs) => {
   const appUserId = userId.split("_", 2)[1];
 
   const appUser = await db.appUser.read(appUserId);
+  if (!appUser) {
+    throw new Error("No user data found");
+  }
 
-  const students = appUser?.students
-  const locale = appUser?.language
+  const students = appUser.students
+  const locale = appUser.language
 
 
   return json({ students, locale });

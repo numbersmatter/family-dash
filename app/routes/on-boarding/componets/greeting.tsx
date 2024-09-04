@@ -14,11 +14,13 @@ export default function Greeting() {
       </CardHeader>
       <CardContent className="grid grid-cols-1 gap-8 items-center">
         <Form method="post" className="mx-auto">
+          <input type="hidden" name="type" value="onboard" />
           <Button name="language" value="en">
             Continue in English
           </Button>
         </Form>
         <Form method="post" className="mx-auto">
+          <input type="hidden" name="type" value="onboard" />
           <Button name="language" value="es">
             Continuar en español
           </Button>

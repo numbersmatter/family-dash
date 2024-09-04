@@ -8,11 +8,12 @@ import { parseWithZod } from "@conform-to/zod";
 import { useUser } from "@clerk/remix";
 import Greeting from "./componets/greeting";
 import { isRegistered } from "~/lib/business-logic/registration.server";
+import AppliedCard from "./componets/applied-card";
 
 const OnBoardingSchema = z.object({
   type: z.literal("onboard"),
   language: z.enum(["en", "es"]),
-  email: z.string(),
+
 });
 
 
@@ -27,16 +28,21 @@ export const loader = async (args: LoaderFunctionArgs) => {
   const registrationStatus = await isRegistered(appUserId);
 
   const status = registrationStatus.status;
-
-
-
-
   const hasProfile = appUserProfile !== null;
 
+  if (status === "registered") {
+    return redirect("/");
+  }
+
+  const locale = appUserProfile?.language ?? "en";
+
+
+  const applicationDate = registrationStatus.applicationDate?.toDateString() ?? new Date().toDateString();
 
 
 
-  return json({ appUserId, hasProfile });
+
+  return json({ appUserId, hasProfile, applicationDate, status, locale });
 };
 
 
@@ -53,7 +59,7 @@ export const action = async (args: ActionFunctionArgs) => {
 
   if (submission.status === "success") {
     const defaultAppUserData = {
-      email: submission.value.email,
+      email: "",
       language: submission.value.language,
       address: {
         street: "",
@@ -71,7 +77,7 @@ export const action = async (args: ActionFunctionArgs) => {
       appUserId,
       data: defaultAppUserData,
     })
-    return redirect("/")
+    return redirect("/on-boarding")
   }
 
 
@@ -82,10 +88,13 @@ export const action = async (args: ActionFunctionArgs) => {
 
 
 export default function OnBoardingPage() {
-  const { appUserId, hasProfile } = useLoaderData<typeof loader>();
-  const { user } = useUser();
+  const {
+    appUserId,
+    hasProfile,
+    status,
+    applicationDate
+  } = useLoaderData<typeof loader>();
 
-  const email = user?.emailAddresses[0]?.emailAddress ?? "no-email";
 
   if (!hasProfile) {
     return (
@@ -103,6 +112,20 @@ export default function OnBoardingPage() {
 
     )
   }
+  if (status === "applied") {
+    return (
+      <div className="grid min-h-screen w-full">
+        <div className="flex flex-col place-content-center">
+          <main className="flex flex-1 flex-col content-center items-center  gap-4 p-4 lg:gap-6 lg:p-6">
+            <AppliedCard />
+          </main>
+        </div>
+      </div>
+    )
+
+  }
+
+
 
 
 

@@ -4,18 +4,19 @@ import type { LoaderFunctionArgs } from "@remix-run/node";
 import { AddressCard } from "./components/address";
 import { getAuth } from "@clerk/remix/ssr.server";
 import { updateAddress } from "./mutations.server";
+import { getAddressData } from "./data-fetcher.server";
 
 export const loader = async (args: LoaderFunctionArgs) => {
-
-  const address = {
-    street: "123 Main St",
-    unit: "Apt 1",
-    city: "Raleigh",
-    state: "NC",
-    zip: "27606",
+  const { userId } = await getAuth(args);
+  if (!userId) {
+    throw redirect("/sign-in?redirect_url=/on-boarding");
   }
 
-  const locale = "en"
+  const appUserId = userId.split("_", 2)[1];
+  const { address, locale } = await getAddressData({ appUserId });
+
+
+
   return json({ locale, address });
 };
 
