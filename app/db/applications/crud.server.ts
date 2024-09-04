@@ -45,7 +45,7 @@ export const applicationsDb = ({ semesterId }: { semesterId: string }) => {
     data,
   }: {
     appUserId: string;
-    data: ApplicationDb;
+    data: Omit<ApplicationDb, "createdDate">;
   }) => {
     const docRef = collection.doc(appUserId);
 

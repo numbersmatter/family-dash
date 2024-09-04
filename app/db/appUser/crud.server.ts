@@ -8,16 +8,16 @@ interface AppUser {
   createdDate: string;
   updatedDate: string;
   language: "en" | "es";
-  address?: {
+  address: {
     street: string;
     unit: string;
     city: string;
     state: string;
     zip: string;
   };
-  household_adults?: number;
-  minors?: Minor[];
-  students?: Student[];
+  household_adults: number;
+  minors: Minor[];
+  students: Student[];
 }
 
 interface AppUserDbModel extends Omit<AppUser, "id"> {}
@@ -50,7 +50,7 @@ export const appUserDb = () => {
       },
       household_adults: doc?.household_adults ?? 1,
       minors: doc?.minors ?? [],
-    };
+    } as AppUser;
   };
 
   const create = async ({

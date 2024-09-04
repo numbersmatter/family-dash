@@ -1,11 +1,18 @@
 import { Timestamp } from "firebase-admin/firestore";
 import { Minor, Student } from "../registrations/registration-types";
 
+export type ApplicationStatus =
+  | "in-progress"
+  | "pending"
+  | "accepted"
+  | "declined"
+  | "error";
+
 interface Application {
   id: string;
   userId: string;
   semesterId: string;
-  status: "in-progress" | "pending" | "accepted" | "declined" | "error";
+  status: ApplicationStatus;
   primaryContact: {
     fname: string;
     lname: string;

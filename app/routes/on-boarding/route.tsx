@@ -52,9 +52,24 @@ export const action = async (args: ActionFunctionArgs) => {
   const submission = parseWithZod(formInput, { schema: OnBoardingSchema });
 
   if (submission.status === "success") {
+    const defaultAppUserData = {
+      email: submission.value.email,
+      language: submission.value.language,
+      address: {
+        street: "",
+        unit: "",
+        city: "",
+        state: "",
+        zip: "",
+      },
+      household_adults: 1,
+      minors: [],
+      students: [],
+    };
+
     await db.appUser.create({
       appUserId,
-      data: submission.value,
+      data: defaultAppUserData,
     })
     return redirect("/")
   }
