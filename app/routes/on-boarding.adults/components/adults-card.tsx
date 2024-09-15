@@ -5,16 +5,11 @@ import { Button } from "~/components/ui/button";
 import { useState } from "react";
 import { Minus, Plus } from "lucide-react";
 
-
-
 export default function AdultsCard() {
   const loaderData = useLoaderData<typeof loader>();
   const [count, setCount] = useState(loaderData.adults)
   const increaseAdults = () => setCount(count + 1)
   const decreaseAdults = () => setCount(count - 1)
-
-
-
 
   const english = {
     title: "Household Adults",
@@ -38,9 +33,7 @@ export default function AdultsCard() {
     cancel: "Cancelar",
   }
 
-
   const lang = loaderData.locale === "es" ? spanish : english
-
 
   return (
     <Card>
@@ -86,8 +79,6 @@ export default function AdultsCard() {
           <div className="mt-3 h-[120px]">
           </div>
         </div>
-
-
       </CardContent>
       <CardFooter className="flex flex-col justify-between gap-4 md:flex-row md:gap-8 ">
         <Form method="post" >
@@ -97,7 +88,6 @@ export default function AdultsCard() {
             {lang.button}
           </Button>
         </Form>
-
       </CardFooter>
     </Card>
   )

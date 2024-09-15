@@ -4,10 +4,12 @@ import { Button } from "~/components/ui/button";
 import UIShell, { NavId, NavNotification } from "./componets/shell";
 import { Outlet } from "@remix-run/react";
 import i18nServer from "~/modules/i18n.server";
+import { confirmRegistration, requireRegistration } from "~/lib/business-logic/registration.server";
 
 
 export const loader = async (args: LoaderFunctionArgs) => {
-  const t = await i18nServer.getFixedT(args.request);
+  // check if user is registered
+  await confirmRegistration(args);
 
   return json({});
 };

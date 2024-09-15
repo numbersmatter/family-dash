@@ -8,16 +8,12 @@ import { addMinor, removeMinor } from "./mutations.server";
 import InstructionCard from "./components/instruction-card";
 import { Minor } from "~/db/registrations/registration-types";
 import MinorsCard from "./components/minors-card";
+import { requireAuth } from "~/lib/business-logic/signed-in.server";
 
 
 
 export const loader = async (args: LoaderFunctionArgs) => {
-  const { userId } = await getAuth(args);
-  if (!userId) {
-    throw redirect("/sign-in");
-  }
-  const appUserId = userId.split("_", 2)[1];
-
+  const { appUserId } = await requireAuth(args);
   const appUser = await db.appUser.read(appUserId);
 
   const locale = appUser?.language
@@ -28,12 +24,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
 };
 
 export const action = async (args: ActionFunctionArgs) => {
-  const { userId } = await getAuth(args);
-  if (!userId) {
-    throw redirect("/sign-in");
-  }
-  const appUserId = userId.split("_", 2)[1];
-
+  const { appUserId } = await requireAuth(args);
   const formInput = await args.request.formData();
 
   const type = formInput.get("type");

@@ -1,33 +1,13 @@
 import {
   Bell,
-  CircleUser,
   Home,
-  LineChart,
   Menu,
-  Package,
   Package2,
   ShoppingCart,
-  Users,
 } from "lucide-react"
-import { Form, Link, NavLink, useFetcher } from "@remix-run/react"
+import { Link, NavLink, useFetcher } from "@remix-run/react"
 import { Badge } from "~/components/ui/badge"
 import { Button } from "~/components/ui/button"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "~/components/ui/card"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "~/components/ui/dropdown-menu"
 import { Sheet, SheetContent, SheetTrigger } from "~/components/ui/sheet"
 import { ElementType, } from "react"
 import { cn } from "~/lib/utils"
@@ -39,7 +19,7 @@ export type NavId =
   | "enrollment"
   | "opportunities"
   | "history"
-  | "register"
+
 
 
 const main_nav: Array<{ id: NavId, name: string, to: string, icon: ElementType }> = [
@@ -48,12 +28,6 @@ const main_nav: Array<{ id: NavId, name: string, to: string, icon: ElementType }
     name: "Dashboard",
     to: "/",
     icon: Home
-  },
-  {
-    id: "register",
-    name: "Register",
-    to: "/register",
-    icon: Users
   },
   {
     id: "opportunities",
@@ -87,8 +61,6 @@ export default function UIShell({
   main_notification: Record<NavId, NavNotification>,
   pantry_name: string
 }) {
-  const { i18n } = useTranslation();
-  const fetcher = useFetcher();
 
 
   return (

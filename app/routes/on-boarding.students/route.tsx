@@ -7,14 +7,10 @@ import InstructionCard from "./components/instruction-card";
 import { addStudent, removeStudent } from "./mutation.server";
 import { parseWithZod } from "@conform-to/zod";
 import { ValidActionTypes } from "./schema";
+import { requireAuth } from "~/lib/business-logic/signed-in.server";
 
 export const loader = async (args: LoaderFunctionArgs) => {
-  const { userId } = await getAuth(args);
-  if (!userId) {
-    throw redirect("/sign-in");
-  }
-  const appUserId = userId.split("_", 2)[1];
-
+  const { appUserId } = await requireAuth(args);
   const appUser = await db.appUser.read(appUserId);
   if (!appUser) {
     throw new Error("No user data found");
@@ -30,12 +26,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
 
 
 export const action = async (args: ActionFunctionArgs) => {
-  const { userId } = await getAuth(args);
-  if (!userId) {
-    throw redirect("/sign-in");
-  }
-
-  const appUserId = userId.split("_", 2)[1];
+  const { appUserId } = await requireAuth(args);
 
   const formInput = await args.request.formData();
 
@@ -57,7 +48,7 @@ export const action = async (args: ActionFunctionArgs) => {
 
 
 export default function StudentsPage() {
-  const loaderData = useLoaderData<typeof loader>();
+  // const loaderData = useLoaderData<typeof loader>();
   return (
     <div className="grid min-h-screen w-full">
       <div className="flex flex-col place-content-center">

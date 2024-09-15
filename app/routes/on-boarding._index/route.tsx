@@ -5,30 +5,28 @@ import { AddressCard } from "./components/address";
 import { getAuth } from "@clerk/remix/ssr.server";
 import { updateAddress } from "./mutations.server";
 import { getAddressData } from "./data-fetcher.server";
+import { checkRegistration } from "~/lib/business-logic/registration.server";
+import { requireAuth } from "~/lib/business-logic/signed-in.server";
+import { getActiveSemester } from "~/lib/business-logic/active-semester.server";
 
 export const loader = async (args: LoaderFunctionArgs) => {
-  const { userId } = await getAuth(args);
-  if (!userId) {
-    throw redirect("/sign-in?redirect_url=/on-boarding");
-  }
+  const { appUserId } = await requireAuth(args);
+  const { semesterId } = await getActiveSemester();
+  await checkRegistration({ semesterId, appUserId });
 
-  const appUserId = userId.split("_", 2)[1];
   const { address, locale } = await getAddressData({ appUserId });
 
 
 
-  return json({ locale, address });
+  return json({ locale, address, appUserId });
 };
 
 
 export const action = async (args: ActionFunctionArgs) => {
   const formInput = await args.request.formData();
-  const { userId } = await getAuth(args);
-  if (!userId) {
-    throw redirect("/sign-in");
-  }
-  const appUserId = userId.split("_", 2)[1];
-  const semesterId = args.params.semesterId ?? "no-id";
+  const { appUserId } = await requireAuth(args);
+  const { semesterId } = await getActiveSemester();
+
 
   return updateAddress({ formInput, appUserId, semesterId });
 };
@@ -42,7 +40,6 @@ export default function OnBoardingPage() {
     <div className="grid min-h-screen w-full">
       <div className="flex flex-col place-content-center">
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
-
           <AddressCard />
         </main>
       </div>

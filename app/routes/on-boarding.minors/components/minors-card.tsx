@@ -17,17 +17,17 @@ import { AddMinorDialog } from "./add-minor-dialog";
 
 
 export default function MinorsCard() {
-  const { minors, locale } = useLoaderData<typeof loader>();
+  const { locale } = useLoaderData<typeof loader>();
 
   const english = {
-    title: "Students",
-    description: "Enter Students",
+    title: "Minors not enrolled in school",
+    description: "Enter ",
     button: "Continue",
   }
 
   const spanish = {
-    title: "Estudiantes",
-    description: "Ingrese estudiantes",
+    title: "Menores no inscriptos en la escuela",
+    description: "Ingrese Menores",
     button: "Continuar",
   }
 

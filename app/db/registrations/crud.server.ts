@@ -1,6 +1,10 @@
 import { FieldValue, Timestamp } from "firebase-admin/firestore";
 import { firestore } from "../firestore.server";
-import { Registration, RegistrationDb } from "./registration-types";
+import {
+  Registration,
+  RegistrationCreate,
+  RegistrationDb,
+} from "./registration-types";
 
 export const regDb = ({ semesterId }: { semesterId: string }) => {
   const collection = firestore.collection(
@@ -31,12 +35,12 @@ export const regDb = ({ semesterId }: { semesterId: string }) => {
     } as Registration;
   };
 
-  const create = async (data: RegistrationDb) => {
+  const create = async (data: RegistrationCreate) => {
     const docRef = collection.doc();
 
     const writeData = {
       ...data,
-      status: "in-progress",
+      status: "registered",
       createdDate: FieldValue.serverTimestamp(),
       updatedDate: FieldValue.serverTimestamp(),
     };

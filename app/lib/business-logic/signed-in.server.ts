@@ -24,3 +24,18 @@ export const userInfo = async (args: LoaderFunctionArgs) => {
     appUserId,
   };
 };
+
+export const requireAuth = async (args: LoaderFunctionArgs) => {
+  const { userId } = await getAuth(args);
+  if (!userId) {
+    throw redirect("/sign-in");
+  }
+  const appUserId = userId.split("_", 2)[1];
+  const appUserProfile = await db.appUser.read(appUserId);
+
+  return {
+    appUserId,
+    appUserProfile,
+    userId,
+  };
+};

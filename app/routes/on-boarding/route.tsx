@@ -7,8 +7,9 @@ import { z } from "zod";
 import { parseWithZod } from "@conform-to/zod";
 import { useUser } from "@clerk/remix";
 import Greeting from "./componets/greeting";
-import { isRegistered } from "~/lib/business-logic/registration.server";
-import AppliedCard from "./componets/applied-card";
+import { checkRegistration, isRegistered } from "~/lib/business-logic/registration.server";
+import { requireAuth } from "~/lib/business-logic/signed-in.server";
+import { getActiveSemester } from "~/lib/business-logic/active-semester.server";
 
 const OnBoardingSchema = z.object({
   type: z.literal("onboard"),
@@ -18,31 +19,28 @@ const OnBoardingSchema = z.object({
 
 
 export const loader = async (args: LoaderFunctionArgs) => {
-  const { userId } = await getAuth(args);
-  if (!userId) {
-    return redirect("/sign-in");
+  const { appUserId, appUserProfile } = await requireAuth(args);
+
+  const { semesterId } = await getActiveSemester();
+
+  const { registered, applicationStatus } = await checkRegistration({ semesterId, appUserId });
+
+  if (applicationStatus === "pending") {
+    return redirect("/reviewing")
   }
-  const appUserId = userId.split("_", 2)[1];
-  const appUserProfile = await db.appUser.read(appUserId);
 
-  const registrationStatus = await isRegistered(appUserId);
-
-  const status = registrationStatus.status;
   const hasProfile = appUserProfile !== null;
 
-  if (status === "registered") {
-    return redirect("/");
+  if (registered) {
+    throw redirect("/");
   }
 
   const locale = appUserProfile?.language ?? "en";
 
 
-  const applicationDate = registrationStatus.applicationDate?.toDateString() ?? new Date().toDateString();
 
 
-
-
-  return json({ appUserId, hasProfile, applicationDate, status, locale });
+  return json({ appUserId, hasProfile, locale });
 };
 
 
@@ -91,8 +89,6 @@ export default function OnBoardingPage() {
   const {
     appUserId,
     hasProfile,
-    status,
-    applicationDate
   } = useLoaderData<typeof loader>();
 
 
@@ -112,18 +108,6 @@ export default function OnBoardingPage() {
 
     )
   }
-  if (status === "applied") {
-    return (
-      <div className="grid min-h-screen w-full">
-        <div className="flex flex-col place-content-center">
-          <main className="flex flex-1 flex-col content-center items-center  gap-4 p-4 lg:gap-6 lg:p-6">
-            <AppliedCard />
-          </main>
-        </div>
-      </div>
-    )
-
-  }
 
 
 
@@ -131,8 +115,6 @@ export default function OnBoardingPage() {
 
   return (
     <Outlet />
-
-
   )
 }
 

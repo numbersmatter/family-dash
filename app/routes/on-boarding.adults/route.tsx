@@ -1,18 +1,14 @@
 import { json, redirect, useLoaderData } from "@remix-run/react"
 import type { LoaderFunctionArgs, ActionFunctionArgs } from '@remix-run/node';
-import { getAuth } from "@clerk/remix/ssr.server";
 import { db } from "~/db/db.server";
 import InstructionCard from "./components/instructions-card";
 import AdultsCard from "./components/adults-card";
 import { saveAdult } from "./mutations.server";
+import { requireAuth } from "~/lib/business-logic/signed-in.server";
 
 
 export const loader = async (args: LoaderFunctionArgs) => {
-  const { userId } = await getAuth(args)
-  if (!userId) {
-    throw redirect("/sign-in");
-  }
-  const appUserId = userId.split("_", 2)[1];
+  const { appUserId } = await requireAuth(args);
   const appUser = await db.appUser.read(appUserId);
 
   const locale = appUser?.language
@@ -24,12 +20,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
 
 
 export const action = async (args: ActionFunctionArgs) => {
-  const { userId } = await getAuth(args);
-  if (!userId) {
-    throw redirect("/sign-in");
-  }
-  const appUserId = userId.split("_", 2)[1];
-
+  const { appUserId } = await requireAuth(args);
   const formData = await args.request.formData();
 
   return saveAdult({ appUserId, formData });
