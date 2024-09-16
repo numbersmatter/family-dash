@@ -68,6 +68,7 @@ export function RequestDialog({ opportunityId, timeSlots }: { timeSlots: { id: s
               hidden
               id={fields.timeSlot.id} name={fields.timeSlot.name}
               value={slot}
+              readOnly
             />
             <Select value={slot} onValueChange={setSlot}>
               <SelectTrigger className="w-[200px]">

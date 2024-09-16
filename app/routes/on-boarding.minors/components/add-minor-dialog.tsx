@@ -3,16 +3,34 @@ import { Button } from "~/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "~/components/ui/dialog";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
-import { loader } from "../route";
+import { action, loader } from "../route";
 import { useEffect, useState } from "react";
+import { parseWithZod } from "@conform-to/zod";
+import { AddMinorSchema } from "../schemas";
+import { getFormProps, getInputProps, useForm } from "@conform-to/react";
 
 export function AddMinorDialog() {
   const { locale } = useLoaderData<typeof loader>();
-  const fetcher = useFetcher();
+  const fetcher = useFetcher<typeof action>();
   const [open, setOpen] = useState(false);
+  const [form, fields] = useForm({
+    // Sync the result of last submission
+    lastResult: fetcher.data,
+
+    // Reuse the validation logic on the client
+    onValidate({ formData }) {
+      return parseWithZod(formData, { schema: AddMinorSchema });
+    },
+    defaultValue: {
+      fname: "",
+      lname: "",
+      birthyear: "",
+    },
+
+    shouldRevalidate: 'onBlur',
+  })
 
   const isFetching = fetcher.state !== "idle";
-  // @ts-expect-error property does exist when needed 
   const success = fetcher.data?.status === "success" ? true : false;
 
   useEffect(() => {
@@ -58,40 +76,43 @@ export function AddMinorDialog() {
             {lang.description}
           </DialogDescription>
         </DialogHeader>
-        <fetcher.Form method="post">
+        <fetcher.Form method="post" {...getFormProps(form)}>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="fname" className="text-right">
                 {lang.fname}
               </Label>
               <Input
-                id="fname"
-                name={"fname"}
-                defaultValue=""
                 className="col-span-3"
+                {...getInputProps(fields.fname, { type: "text" })}
               />
+              <div className="text-red-500 col-start-2 col-span-3">
+                {fields.fname.errors}
+              </div>
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="lname" className="text-right">
                 {lang.lname}
               </Label>
               <Input
-                id="lname"
-                name={"lname"}
-                defaultValue=""
                 className="col-span-3"
+                {...getInputProps(fields.lname, { type: "text" })}
               />
+              <div className="text-red-500 col-start-2 col-span-3">
+                {fields.lname.errors}
+              </div>
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="birthyear" className="text-right">
                 {lang.birthyear}
               </Label>
               <Input
-                id="birthyear"
-                name={"birthyear"}
-                defaultValue=""
                 className="col-span-3"
+                {...getInputProps(fields.birthyear, { type: "number" })}
               />
+              <div className="text-red-500 col-start-2 col-span-3">
+                {fields.birthyear.errors}
+              </div>
             </div>
           </div>
           <DialogFooter>

@@ -69,7 +69,7 @@ export default function OpenOpportunities() {
                   <TableCell className="hidden md:table-cell">
                     {opportunity.date}
                   </TableCell>
-                  <TableCell>
+                  {/* <TableCell>
                     {
                       !opportunity.applied ?
                         <Button variant={"default"} size={"sm"}>
@@ -77,19 +77,20 @@ export default function OpenOpportunities() {
                         </Button>
                         :
                         <span className="text-lg font-semibold">
-                          {opportunity.code}
+                          {opportunity.type}
                         </span>
                     }
-                  </TableCell>
+                  </TableCell> */}
                 </TableRow>
               )
             })}
           </TableBody>
         </Table>
       </CardContent>
+
       <CardFooter>
         <div className="text-xs text-muted-foreground">
-          Showing <strong>1-10</strong> of <strong>{totalOpportunities}</strong> products
+          Showing <strong>1-10</strong> of <strong>{totalOpportunities}</strong> opportunities
         </div>
       </CardFooter>
     </Card>

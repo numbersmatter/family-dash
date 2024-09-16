@@ -4,7 +4,7 @@ interface FoodOpportunity {
   id: string;
   name: string;
   status: string;
-  code: string;
+  type: string;
   date: string;
   applied: boolean;
   confirm?: string;
@@ -16,21 +16,13 @@ export const getOpportunities = async ({
 }: {
   appUserId: string;
 }) => {
-  const activeSemesters = await db.semesters.getActive();
-  const semesterId = activeSemesters.length > 0 ? activeSemesters[0].id : "1";
-
-  const userSemesterDoc = await db
-    .userSemesters({ appUserId })
-    .read({ semesterId });
-
-  if (!userSemesterDoc) {
-    return {
-      opportunities: [],
-    };
+  const activeSemester = await db.organization.activeSemester();
+  if (!activeSemester) {
+    throw new Error("No active semester");
   }
 
   const opportunitiesFromDb = await db.food_opportunities.getFromSemester({
-    semesterId,
+    semesterId: activeSemester.semester_id,
   });
 
   const matchingOpportunitiesPromises = opportunitiesFromDb.map(async (opp) => {
@@ -65,8 +57,8 @@ export const getOpportunities = async ({
 
   return {
     opportunities,
-    activeSemesters,
-    semesterId,
+    // activeSemesters,
+    // semesterId,
     matchingOpportunities,
     opportunitiesFromDb,
   };

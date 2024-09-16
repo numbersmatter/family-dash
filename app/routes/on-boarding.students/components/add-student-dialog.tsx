@@ -11,21 +11,12 @@ import {
 } from "~/components/ui/dialog";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "~/components/ui/select"
-
 import { useEffect, useState } from "react";
-import { useForm, getFormProps, getInputProps, getSelectProps } from "@conform-to/react";
+import { useForm, getFormProps, getInputProps } from "@conform-to/react";
 import { parseWithZod } from "@conform-to/zod";
 import { AddStudentSchema } from "../schema";
 import { action, loader } from "../route";
+import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
 
 export function AddStudentDialog() {
   const { locale } = useLoaderData<typeof loader>();
@@ -33,6 +24,7 @@ export function AddStudentDialog() {
   const params = useParams();
   const reg_id = params.reg_id ?? "no-id";
   const [open, setOpen] = useState(false);
+  const [school, setSchool] = useState("");
   const [form, fields] = useForm({
     // Sync the result of last submission
     lastResult: fetcher.data,
@@ -138,7 +130,27 @@ export function AddStudentDialog() {
                 {lang.school}
               </Label>
               <div className="col-span-3">
-                <Select
+                <RadioGroup defaultValue="comfortable" value={school} onValueChange={setSchool}>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="tps" id="tps" />
+                    <Label htmlFor="tps">Thomasville Primary</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="lde" id="lde" />
+                    <Label htmlFor="lde">Liberty Drive Elementary</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="tms" id="tms" />
+                    <Label htmlFor="tms">Thomasville Middle</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="ths" id="ths" />
+                    <Label htmlFor="tms">Thomasville High</Label>
+                  </div>
+                </RadioGroup>
+                <input type="hidden" name="school" value={school} readOnly />
+                {/* <RadioGroup defaultValue="comfortable" value={school} onValueChange={setSchool}>
+                {/* <Select
                   {...getSelectProps(fields.school)}
                   defaultValue=""
                 >
@@ -148,6 +160,9 @@ export function AddStudentDialog() {
                   <SelectContent>
                     <SelectGroup>
                       <SelectLabel>Schools</SelectLabel>
+                      <SelectItem disabled value="school" className="text-sm">
+                        {lang.schoolSelect}
+                      </SelectItem>
                       <SelectItem value="tps">
                         Thomasville Primary
                       </SelectItem>
@@ -162,7 +177,7 @@ export function AddStudentDialog() {
                       </SelectItem>
                     </SelectGroup>
                   </SelectContent>
-                </Select>
+                </Select> */}
               </div>
               <div className="text-red-500 col-span-3 col-start-2">
                 {fields.school.errors}

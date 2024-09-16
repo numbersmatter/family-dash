@@ -113,6 +113,9 @@ export default function OpenOpportunities() {
           </div>
         </CardFooter>
       </Card>
+      <div>
+        <pre>{JSON.stringify(opportunities, null, 2)}</pre>
+      </div>
     </div>
   )
 }
