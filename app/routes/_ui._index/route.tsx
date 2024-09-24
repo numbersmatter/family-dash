@@ -8,6 +8,8 @@ import i18nServer from "~/modules/i18n.server";
 import { getAuth } from "@clerk/remix/ssr.server";
 import { RedirectToSignIn, SignedOut } from "@clerk/remix";
 import { requireRegistration } from "~/lib/business-logic/registration.server";
+import ActiveRequests from "./components/active-requests";
+import WelcomeUser from "./components/welcome-user";
 
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
@@ -63,12 +65,9 @@ export default function Dashboard() {
 
   return (
     <>
-      <div className="flex items-center py-2">
-        <h1 className="text-lg font-semibold md:text-2xl">
-          {t("welcome")}
-        </h1>
-      </div>
 
+      <WelcomeUser />
+      <ActiveRequests />
       <OpenOpportunities />
 
       <SignedOut>

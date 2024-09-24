@@ -23,20 +23,6 @@ export const getDashboardData = async ({
 }: {
   appUserId: string;
 }) => {
-  // const activeSemesters = await db.semesters.getActive();
-  // const semesterId = activeSemesters.length > 0 ? activeSemesters[0].id : "1";
-
-  // const userSemesterDoc = await db
-  //   .userSemesters({ appUserId })
-  //   .read({ semesterId });
-
-  // if (!userSemesterDoc) {
-  //   const opportunities: FoodOpportunity[] = [];
-  //   return {
-  //     opportunities,
-  //   };
-  // }
-
   //  get active semester
   const activeSemester = await db.organization.activeSemester();
   if (!activeSemester) {
@@ -44,41 +30,62 @@ export const getDashboardData = async ({
   }
 
   // get opportunities
-  const opportunitiesFromDb = await db.food_opportunities.getFromSemester({
+  // const opportunitiesFromDb = await db.food_opportunities.getFromSemester({
+  //   semesterId: activeSemester.semester_id,
+  // });
+
+  // const opportunities = opportunitiesFromDb.map((opp) => {
+  //   return {
+  //     id: opp.id,
+  //     name: opp.name,
+  //     status: opp.status,
+  //     type: opp.type,
+  //     date: opp.date,
+  //   } as FoodOpportunity;
+  // });
+
+  const activeOpportunities = await db.food_opportunities.activeOpportunities({
     semesterId: activeSemester.semester_id,
   });
 
-  // const opportunities: FoodOpportunity[] = [
-  //   {
-  //     id: "1",
-  //     name: "Food Pickup - Sept 4th",
-  //     status: "Confirmed",
-  //     code: "H5GVB",
-  //     totalSales: 25,
-  //     date: "Sept. 4, 2024",
-  //     applied: true,
-  //   },
-  //   {
-  //     id: "2",
-  //     name: "Drive-Thru - Sept 18",
-  //     status: "Open",
-  //     code: "DF6R",
-  //     totalSales: 100,
-  //     date: "September 18, 2024",
-  //     applied: false,
-  //   },
-  // ];
+  const readRequestsPromises = activeOpportunities.map((opp) =>
+    db.opportunity_requests({ opportunityId: opp.id }).read(appUserId)
+  );
 
-  const opportunities = opportunitiesFromDb.map((opp) => {
-    return {
-      id: opp.id,
-      name: opp.name,
-      status: opp.status,
-      type: opp.type,
-      date: opp.date,
-    } as FoodOpportunity;
-  });
+  const readRequests = await Promise.all(readRequestsPromises);
 
+  const foodRequests = readRequests
+    .filter((req) => req)
+    .map((req) => {
+      const opp = activeOpportunities.find(
+        (opp) => opp.id === req?.opportunityId
+      );
+      const oppTimeSlots = opp ? opp.timeSlots : [];
+
+      const timeSlots = oppTimeSlots.filter(
+        (slot) => slot.id === req?.requestData?.timeSlot
+      );
+
+      const timeSlotLabel = timeSlots.length > 0 ? timeSlots[0].label : "error";
+
+      return {
+        id: req?.id ?? "error",
+        name: opp?.name ?? "error",
+        status: req?.status as string,
+        code: req?.confirm as string,
+        type: opp?.type ?? "error",
+        date: opp?.date ?? "error",
+        slot: timeSlotLabel,
+      };
+    });
+
+  const openOpportunities = activeOpportunities.filter(
+    (opp) => opp.status === "open"
+  );
+
+  const nonAppliedOpportunities = openOpportunities.filter(
+    (opp) => !readRequests.find((req) => req?.opportunityId === opp.id)
+  );
   const registeredSemesters: Semester[] = [
     // {
     //   id: "1",
@@ -88,7 +95,8 @@ export const getDashboardData = async ({
   ];
 
   return {
-    opportunities,
+    opportunities: nonAppliedOpportunities,
+    foodRequests,
     registeredSemesters,
   };
 };

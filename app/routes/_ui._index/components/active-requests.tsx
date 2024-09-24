@@ -1,7 +1,5 @@
-import { useLoaderData } from "@remix-run/react"
-import { CarIcon, MoreHorizontal } from "lucide-react"
-import { Badge } from "~/components/ui/badge"
-import { Button } from "~/components/ui/button"
+import { Form, useFetcher, useLoaderData } from "@remix-run/react"
+
 import {
   Card,
   CardContent,
@@ -11,10 +9,9 @@ import {
   CardTitle,
 } from "~/components/ui/card"
 
-
-import { loader } from "../route"
 import { ColumnDef } from "@tanstack/react-table"
 import { DataTable } from "~/components/ui/data-table"
+import { loader } from "../route"
 
 
 type FoodRequest = {
@@ -68,7 +65,6 @@ const requestColumns: ColumnDef<FoodRequest>[] = [
 export default function ActiveRequests() {
   const { foodRequests } = useLoaderData<typeof loader>()
 
-
   return (
     <div className="mx-auto max-w-7xl py-4 sm:px-6 lg:px-8 ">
       {/* Content goes here */}
@@ -82,6 +78,7 @@ export default function ActiveRequests() {
         </CardHeader>
         <CardContent>
           <DataTable columns={requestColumns} data={foodRequests} />
+          {/* <pre>{JSON.stringify(data, null, 2)}</pre> */}
         </CardContent>
         <CardFooter>
 

@@ -1,4 +1,4 @@
-import { isRouteErrorResponse, json, redirect, useLoaderData, useRouteError } from "@remix-run/react"
+import { isRouteErrorResponse, json, Link, redirect, useLoaderData, useRouteError } from "@remix-run/react"
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { SignUp } from "@clerk/remix";
 import { getAuth } from "@clerk/remix/ssr.server";
@@ -22,6 +22,16 @@ export default function SignUpPage() {
       <div className="flex flex-col place-content-center">
 
         <main className="flex flex-1 flex-col content-center items-center  gap-4 p-4 lg:gap-6 lg:p-6">
+          <h1 className="text-3xl font-bold">
+            Register as a NEW User
+          </h1>
+          <p>
+            If you already have an account click <Link to="/sign-in">
+              <span className="text-blue-600 underline hover:text-blue-800">
+                here
+              </span>
+            </Link>
+          </p>
           <SignUp />
         </main>
       </div>
