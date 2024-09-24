@@ -1,10 +1,11 @@
 import { json, redirect, useLoaderData } from "@remix-run/react"
 import type { LoaderFunctionArgs, ActionFunctionArgs } from "@remix-run/node";
 import OpenOpportunities from "./components/open-opportunities";
-import { getOpportunities } from "./data-fetchers.server";
+import { getFoodRequests, getOpportunities } from "./data-fetchers.server";
 import { handleRequest } from "./mutations.server";
 import { RedirectToSignIn, SignedOut } from "@clerk/remix";
 import { getAuth } from "@clerk/remix/ssr.server";
+import ActiveRequests from "./components/active-requests";
 
 interface FoodOpportunity {
   id: string;
@@ -25,10 +26,11 @@ export const loader = async (args: LoaderFunctionArgs) => {
   }
 
   const appUserId = userId.split("_", 2)[1];
-
   const data = await getOpportunities({ appUserId });
 
-  return json({ ...data, locale: "en" });
+  const foodRequests = await getFoodRequests({ appUserId });
+
+  return json({ ...data, foodRequests, locale: "en" });
 };
 
 
@@ -54,9 +56,9 @@ export default function OpportunitiesPage() {
   const data = useLoaderData<typeof loader>()
   return (
     <>
+      <ActiveRequests />
       <OpenOpportunities />
-      <div className="mx-auto max-w-7xl sm:px-6 lg:px-8 ">
-      </div>
+
       <SignedOut>
         <RedirectToSignIn />
       </SignedOut>

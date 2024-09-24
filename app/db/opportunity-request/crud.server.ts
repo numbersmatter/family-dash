@@ -40,6 +40,7 @@ export const opportunityRequestDb = ({
       opportunityId: doc.data()?.opportunityId ?? "error",
       status: doc.data()?.status ?? "error",
       confirm: doc.data()?.confirm ?? "error",
+      requestData: doc.data()?.requestData,
     };
   };
 

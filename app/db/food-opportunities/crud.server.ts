@@ -51,8 +51,24 @@ export const foodOpportunityDb = () => {
     });
   };
 
+  const getOpen = async ({ semesterId }: { semesterId: string }) => {
+    const allOpportunities = await getFromSemester({ semesterId });
+    return allOpportunities.filter((opp) => opp.status === "open");
+  };
+
+  const activeOpportunities = async ({
+    semesterId,
+  }: {
+    semesterId: string;
+  }) => {
+    const allOpportunities = await getFromSemester({ semesterId });
+    return allOpportunities.filter((opp) => opp.status !== "past");
+  };
+
   return {
     getFromSemester,
     read,
+    getOpen,
+    activeOpportunities,
   };
 };

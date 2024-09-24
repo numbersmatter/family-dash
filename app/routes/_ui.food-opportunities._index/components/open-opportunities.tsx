@@ -90,16 +90,11 @@ export default function OpenOpportunities() {
                       {opportunity.date}
                     </TableCell>
                     <TableCell>
-                      {
-                        opportunity.confirm ?
-                          <span className="text-lg font-semibold">
-                            {/* {opportunity.code} */}
-                            {opportunity.confirm}
-                          </span>
-                          :
-                          <RequestDialog timeSlots={opportunity.timeSlots} opportunityId={opportunity.id} />
+                      <RequestDialog
+                        timeSlots={opportunity.timeSlots}
+                        opportunityId={opportunity.id}
+                      />
 
-                      }
                     </TableCell>
                   </TableRow>
                 )
@@ -113,9 +108,7 @@ export default function OpenOpportunities() {
           </div>
         </CardFooter>
       </Card>
-      <div>
-        <pre>{JSON.stringify(opportunities, null, 2)}</pre>
-      </div>
+
     </div>
   )
 }
